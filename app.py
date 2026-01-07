@@ -1,16 +1,13 @@
 import streamlit as st
 from groq import Groq
 
-# 1. TEMA DARK MODE & WARNA TECH (Langsung di Kode)
-st.set_page_config(page_title="AI Stock Metadata Tech", page_icon="🤖", layout="wide")
+# 1. TEMA DARK MODE & WARNA TECH
+st.set_page_config(page_title="AI Stock Metadata Llama 4", page_icon="🤖", layout="wide")
 
 st.markdown("""
     <style>
-    /* Paksa Tema Gelap */
     .stApp { background-color: #0e1117; color: #ffffff; }
     [data-testid="stSidebar"] { background-color: #161b22; }
-    
-    /* Tombol Cyan Neon */
     .stButton>button {
         background-color: #00f2ff !important;
         color: #000000 !important;
@@ -19,10 +16,7 @@ st.markdown("""
         width: 100%;
         box-shadow: 0px 0px 15px rgba(0, 242, 255, 0.5);
     }
-    /* Warna Text Sidebar */
-    [data-testid="stSidebar"] label, [data-testid="stSidebar"] h2 {
-        color: #00f2ff !important;
-    }
+    [data-testid="stSidebar"] label, [data-testid="stSidebar"] h2 { color: #00f2ff !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -35,44 +29,43 @@ except Exception:
     st.stop()
 
 # 3. HEADER
-st.title("🤖 AI Stock Metadata Generator")
-st.write("Sistem Otomatisasi Metadata Profesional")
+st.title("🤖 AI Stock Metadata Generator (Llama 4.0)")
+st.write("Menggunakan teknologi Llama 4 Scout terbaru untuk optimasi SEO.")
 
 # 4. SIDEBAR
 with st.sidebar:
     st.header("⚙️ Control Panel")
-    platform = st.selectbox(
-        "Pilih Target Platform:",
-        ("Adobe Stock", "Shutterstock")
-    )
+    platform = st.selectbox("Pilih Target Platform:", ("Adobe Stock", "Shutterstock"))
     st.divider()
-    st.write("Status: **Online** 🟢")
+    st.write("Model: **Llama 4 Scout** ⚡")
 
 # 5. UPLOAD & PROSES
 uploaded_files = st.file_uploader("Upload Foto", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
-if st.button("PROSES METADATA SEKARANG 🚀"):
+if st.button("PROSES METADATA DENGAN LLAMA 4 🚀"):
     if uploaded_files:
         for file in uploaded_files:
-            with st.expander(f"Hasil Analisis: {file.name}", expanded=True):
+            with st.expander(f"Hasil: {file.name}", expanded=True):
                 col1, col2 = st.columns([1, 2])
                 with col1:
                     st.image(file, use_container_width=True)
                 with col2:
-                    # PROMPT DISESUAIKAN
+                    # PROMPT UNTUK LLAMA 4 (MODEL TEXT)
+                    # Kita minta AI menganalisa berdasarkan nama file sebagai context awal
+                    prompt = f"Target Platform: {platform}. Berdasarkan gambar dengan nama file '{file.name}', buatkan metadata profesional."
                     if platform == "Adobe Stock":
-                        prompt = "Analyze image for Adobe Stock. Provide TITLE (max 70 chars) and 25 KEYWORDS (comma separated)."
+                        prompt += " Berikan TITLE (max 70 chars) dan 25 KEYWORDS (koma)."
                     else:
-                        prompt = "Analyze image for Shutterstock. Provide DESCRIPTION (min 200 chars), 50 KEYWORDS, and METADATA tags."
+                        prompt += " Berikan DESCRIPTION (min 200 chars), 50 KEYWORDS, dan METADATA tags."
 
                     try:
-                        # PAKAI MODEL TERBARU: llama-3.2-11b-vision-instant
+                        # GANTI KE NAMA MODEL LLAMA 4 SESUAI LOG KAMU
                         completion = client.chat.completions.create(
-                            model="llama-3.2-11b-vision-instant",
+                            model="meta-llama/llama-4-scout-17b-16e-instruct",
                             messages=[{"role": "user", "content": prompt}]
                         )
                         hasil = completion.choices[0].message.content
-                        st.markdown(f"### Format: {platform}")
+                        st.markdown(f"### Output Llama 4")
                         st.code(hasil, language="text")
                     except Exception as e:
                         st.error(f"Error AI: {e}")
