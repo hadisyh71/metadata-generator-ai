@@ -25,50 +25,51 @@ try:
     api_key = st.secrets["GROQ_API_KEY"]
     client = Groq(api_key=api_key)
 except Exception:
-    st.error("⚠️ API Key tidak ditemukan di Secrets!")
+    st.error("⚠️ API Key not found in Secrets!")
     st.stop()
 
 # 3. HEADER
 st.title("🤖 AI Stock Metadata Generator (Llama 4.0)")
-st.write("Menggunakan teknologi Llama 4 Scout terbaru untuk optimasi SEO.")
+st.write("Professional SEO Optimization for Stock Contributors.")
 
 # 4. SIDEBAR
 with st.sidebar:
     st.header("⚙️ Control Panel")
-    platform = st.selectbox("Pilih Target Platform:", ("Adobe Stock", "Shutterstock"))
+    platform = st.selectbox("Select Target Platform:", ("Adobe Stock", "Shutterstock"))
     st.divider()
     st.write("Model: **Llama 4 Scout** ⚡")
+    st.write("Output Language: **English** 🇬🇧")
 
 # 5. UPLOAD & PROSES
-uploaded_files = st.file_uploader("Upload Foto", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
+uploaded_files = st.file_uploader("Upload Photos", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
-if st.button("PROSES METADATA DENGAN LLAMA 4 🚀"):
+if st.button("PROCESS WITH LLAMA 4 🚀"):
     if uploaded_files:
         for file in uploaded_files:
-            with st.expander(f"Hasil: {file.name}", expanded=True):
+            with st.expander(f"Result for: {file.name}", expanded=True):
                 col1, col2 = st.columns([1, 2])
                 with col1:
                     st.image(file, use_container_width=True)
                 with col2:
-                    # PROMPT UNTUK LLAMA 4 (MODEL TEXT)
-                    # Kita minta AI menganalisa berdasarkan nama file sebagai context awal
-                    prompt = f"Target Platform: {platform}. Berdasarkan gambar dengan nama file '{file.name}', buatkan metadata profesional."
+                    # UPDATED PROMPT FOR ENGLISH OUTPUT
+                    prompt = f"Act as a Stock Image SEO Expert. Target Platform: {platform}. Based on the filename '{file.name}', generate professional metadata in ENGLISH."
                     if platform == "Adobe Stock":
-                        prompt += " Berikan TITLE (max 70 chars) dan 25 KEYWORDS (koma)."
+                        prompt += " Provide: TITLE (max 70 chars) and 25 KEYWORDS (comma separated)."
                     else:
-                        prompt += " Berikan DESCRIPTION (min 200 chars), 50 KEYWORDS, dan METADATA tags."
+                        prompt += " Provide: DESCRIPTION (min 200 chars), 50 KEYWORDS, and METADATA tags."
+                    
+                    prompt += " Final instruction: The entire output MUST be in English."
 
                     try:
-                        # GANTI KE NAMA MODEL LLAMA 4 SESUAI LOG KAMU
                         completion = client.chat.completions.create(
                             model="meta-llama/llama-4-scout-17b-16e-instruct",
                             messages=[{"role": "user", "content": prompt}]
                         )
                         hasil = completion.choices[0].message.content
-                        st.markdown(f"### Output Llama 4")
+                        st.markdown(f"### {platform} English Output")
                         st.code(hasil, language="text")
                     except Exception as e:
-                        st.error(f"Error AI: {e}")
+                        st.error(f"AI Error: {e}")
         st.balloons()
     else:
-        st.warning("Upload fotonya dulu bos!")
+        st.warning("Please upload some photos first.")
