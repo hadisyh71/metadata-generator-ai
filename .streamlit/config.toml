@@ -1,6 +1,15 @@
 [theme]
-primaryColor = "#00f2ff"
-backgroundColor = "#0e1117"
-secondaryBackgroundColor = "#161b22"
-textColor = "#ffffff"
+# Warna utama untuk sorotan dan fokus (Biru AI yang lebih matang)
+primaryColor = "#3B82F6"
+
+# Warna latar belakang utama (Sangat gelap, bukan hitam mati)
+backgroundColor = "#0B0F19"
+
+# Warna latar belakang sidebar dan input box (Sedikit lebih terang dari background utama)
+secondaryBackgroundColor = "#161B26"
+
+# Warna teks (Putih tulang agar tidak terlalu tajam di mata)
+textColor = "#F3F4F6"
+
+# Font standar yang bersih
 font = "sans serif"
