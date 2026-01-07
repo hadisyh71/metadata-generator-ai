@@ -1,56 +1,105 @@
 import streamlit as st
 from groq import Groq
 
-# Tema Wide agar lega
-st.set_page_config(page_title="AI Stock Metadata", page_icon="📸", layout="wide")
+# 1. TEMA & KONFIGURASI (Warna Tech)
+st.set_page_config(
+    page_title="AI Stock Metadata Tech", 
+    page_icon="🤖", 
+    layout="wide"
+)
 
-st.title("⚡ AI Stock Metadata Generator")
-st.write("Khusus untuk kontributor Adobe Stock & Shutterstock.")
+# Custom CSS untuk nuansa Tech
+st.markdown("""
+    <style>
+    .main {
+        background-color: #0e1117;
+    }
+    .stButton>button {
+        background-color: #00f2ff;
+        color: black;
+        border-radius: 10px;
+        font-weight: bold;
+    }
+    .stSelectbox label, .stHeader {
+        color: #00f2ff !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-# Sidebar untuk pengaturan
+# 2. SISTEM KEAMANAN API KEY (Mengambil dari Secrets)
+# Pastikan kamu sudah isi GROQ_API_KEY di menu Settings > Secrets di Streamlit Cloud
+try:
+    api_key = st.secrets["GROQ_API_KEY"]
+    client = Groq(api_key=api_key)
+except Exception:
+    st.error("⚠️ API Key tidak ditemukan! Pastikan sudah setting di Dashboard Streamlit > Settings > Secrets.")
+    st.stop()
+
+# 3. HEADER
+st.title("🤖 AI Stock Metadata Generator")
+st.write("Sistem Otomatisasi Metadata berbasis Llama 3.2 Vision.")
+
+# 4. SIDEBAR (Pilihan Platform)
 with st.sidebar:
-    st.header("Konfigurasi")
-    # Bagian ini nanti bisa kita sembunyikan jika sudah pakai 'Secrets'
-    api_key = st.text_input("Masukkan Groq API Key", type="password")
-    
-    st.divider()
+    st.header("⚙️ Control Panel")
     platform = st.selectbox(
-        "Pilih Format Platform:",
-        ("Adobe Stock (Title & Keywords)", "Shutterstock (Description & Metadata)")
+        "Pilih Target Platform:",
+        ("Adobe Stock", "Shutterstock")
     )
-    st.info("AI menggunakan model Llama-3.2 Vision terbaru.")
+    st.divider()
+    st.write("Status: **Online** 🟢")
+    st.info("Mode ini otomatis menyesuaikan format judul & keyword spesifik tiap platform.")
 
-# Area Upload
-uploaded_files = st.file_uploader("Upload Foto (Bisa banyak)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
+# 5. AREA UPLOAD
+uploaded_files = st.file_uploader("Upload Foto Produk/Stok (Bisa banyak sekaligus)", 
+                                  accept_multiple_files=True, 
+                                  type=['png', 'jpg', 'jpeg'])
 
-if st.button("Mulai Proses Antrian 🚀"):
-    if not api_key:
-        st.error("Silakan isi API Key di sidebar dulu!")
-    elif uploaded_files:
-        client = Groq(api_key=api_key)
-        
+if st.button("PROSES METADATA SEKARANG 🚀"):
+    if uploaded_files:
         for file in uploaded_files:
-            # Membuat kotak (card) untuk setiap hasil
-            with st.expander(f"Hasil: {file.name}", expanded=True):
+            with st.expander(f"Hasil Analisis: {file.name}", expanded=True):
                 col1, col2 = st.columns([1, 2])
                 
                 with col1:
-                    st.image(file, use_container_width=True)
+                    st.image(file, use_container_width=True, caption="Preview Image")
                 
                 with col2:
-                    # Instruksi AI berbeda tergantung pilihan platform
-                    if "Adobe Stock" in platform:
-                        prompt = "Analyze this image. Provide a catchy Title (max 70 chars) and 25 essential SEO keywords separated by commas."
+                    # LOGIKA REVISI DATA (Adobe vs Shutterstock)
+                    if platform == "Adobe Stock":
+                        prompt = """
+                        Analyze this image for Adobe Stock. 
+                        Provide:
+                        1. Title: Descriptive, max 70 chars, no brands.
+                        2. Keywords: 25 comma-separated keywords, ordered by relevance.
+                        Format: 
+                        TITLE: [text]
+                        KEYWORDS: [text]
+                        """
                     else:
-                        prompt = "Analyze this image. Provide a detailed Description (min 200 chars) and 50 keywords separated by commas."
+                        prompt = """
+                        Analyze this image for Shutterstock. 
+                        Provide:
+                        1. Description: Detailed caption, at least 200 chars.
+                        2. Keywords: 50 comma-separated keywords.
+                        3. Metadata: Technical tags (category, orientation).
+                        Format:
+                        DESCRIPTION: [text]
+                        KEYWORDS: [text]
+                        METADATA: [text]
+                        """
 
                     try:
-                        chat_completion = client.chat.completions.create(
+                        # Proses AI
+                        completion = client.chat.completions.create(
                             model="llama-3.2-11b-vision-preview",
                             messages=[{"role": "user", "content": prompt}]
                         )
-                        st.markdown(chat_completion.choices[0].message.content)
+                        hasil = completion.choices[0].message.content
+                        st.markdown(f"### Output {platform}")
+                        st.code(hasil, language="text") # Pake st.code supaya gampang di-copy user
                     except Exception as e:
-                        st.error(f"Gagal memproses: {e}")
+                        st.error(f"Gagal memproses gambar ini: {e}")
+        st.balloons()
     else:
-        st.warning("Pilih foto dulu ya.")
+        st.warning("Silakan upload foto dulu bosku!")
