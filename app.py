@@ -7,18 +7,27 @@ import time
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="Universal AI Metadata Pro", page_icon="✨", layout="wide")
 
-# CSS UNTUK UI MEWAH & FIX POSISI TOMBOL
+# 2. CSS FINAL: UI MEWAH, TOMBOL WARNA, HIDE STREAMLIT ATTRIBUTES
 st.markdown("""
     <style>
+    /* --- HIDE STREAMLIT DEFAULT ELEMENTS (CLEAN LOOK) --- */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;} /* Ini kunci agar pop-up profil tidak muncul */
+    
+    /* --- THEME COLORS --- */
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
     
+    /* --- BUTTON STYLING --- */
     .stButton>button {
         background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
         color: white; border-radius: 12px; border: none; font-weight: 600; width: 100%;
         box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        transition: 0.3s;
     }
+    .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
     
-    /* Tier Card Styling */
+    /* --- TIER CARD STYLING --- */
     .tier-wrapper {
         display: flex; flex-direction: column; height: 100%;
         background: rgba(255,255,255,0.03); padding: 25px; 
@@ -34,6 +43,7 @@ st.markdown("""
     }
     .sub-link:hover { opacity: 0.8; transform: scale(1.02); }
     
+    /* --- TIER SPECIFIC COLORS --- */
     .bg-stock { border: 1px solid #3B82F6; } .btn-stock { background: #3B82F6; }
     .bg-sosmed { border: 1px solid #8B5CF6; } .btn-sosmed { background: #8B5CF6; }
     .bg-full { border: 2px solid #F59E0B; background: rgba(245, 158, 11, 0.05); } 
@@ -47,7 +57,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- FUNGSI POP-UP PENJELASAN TIER ---
+# 3. FUNGSI POP-UP PENJELASAN TIER
 @st.dialog("💎 Pilih Paket Premium Anda")
 def show_subscription_tiers():
     st.markdown("<p style='text-align: center; color: #9CA3AF; margin-bottom: 30px;'>Tingkatkan produktivitas dengan akses server prioritas.</p>", unsafe_allow_html=True)
@@ -57,12 +67,12 @@ def show_subscription_tiers():
         st.markdown(f"""<div class="tier-wrapper bg-stock"><div><h3 style="color: #3B82F6; margin: 0;">📦 STOCK</h3><h1 style="margin: 15px 0;">29<span style="font-size: 0.5em;">rb</span></h1><div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8;">✅ Adobe & Shutterstock<br>✅ SEO Tagging Expert<br>✅ No-Ads Interface<br>✅ English Language</div></div><a href="mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Stock&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20STOCK%20(29rb)." class="sub-link btn-stock">Subscribe Stock</a></div>""", unsafe_allow_html=True)
 
     with col2:
-        st.markdown(f"""<div class="tier-wrapper bg-sosmed"><div><h3 style="color: #8B5CF6; margin: 0;">📱 SOSMED</h3><h1 style="margin: 15px 0;">29<span style="font-size: 0.5em;">rb</span></h1><div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8;">✅ IG, TikTok, FB, YT, In<br>✅ Viral Hook & Hashtags<br>✅ 8+ Pilihan Bahasa<br>✅ Niche & Tone Options</div></div><a href="mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Sosmed&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20SOSMED%20(29rb)." class="sub-link btn-sosmed">Subscribe Sosmed</a></div>""", unsafe_allow_html=True)
+        st.markdown(f"""<div class="tier-wrapper bg-sosmed"><div><h3 style="color: #8B5CF6; margin: 0;">📱 SOSMED</h3><h1 style="margin: 15px 0;">29<span style="font-size: 0.5em;">rb</span></h1><div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8;">✅ IG, TikTok, FB, X, YT<br>✅ Viral Hook & Hashtags<br>✅ 8+ Pilihan Bahasa<br>✅ Niche & Tone Options</div></div><a href="mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Sosmed&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20SOSMED%20(29rb)." class="sub-link btn-sosmed">Subscribe Sosmed</a></div>""", unsafe_allow_html=True)
 
     with col3:
         st.markdown(f"""<div style="position: relative; height: 100%;"><div class="best-value-tag">BEST VALUE</div><div class="tier-wrapper bg-full"><div><h3 style="color: #F59E0B; margin: 0;">🔥 FULL</h3><h1 style="margin: 15px 0;">49<span style="font-size: 0.5em;">rb</span></h1><div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8;">✅ Akses Semua Fitur<br>✅ Prioritas Llama 4<br>✅ Unlimited Models<br>✅ Support 24/7</div></div><a href="mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Full&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20FULL%20(49rb)." class="sub-link btn-full">Subscribe Full Access</a></div></div>""", unsafe_allow_html=True)
 
-# --- SIDEBAR & KONTROL ---
+# 4. SIDEBAR & KONTROL
 with st.sidebar:
     st.header("🌐 AI CONTROL CENTER")
     access_mode = st.radio("Access Mode:", ("Free (Standard)", "Premium (Pro Access)"))
@@ -86,7 +96,7 @@ with st.sidebar:
                 elif user_token.startswith("SOC-"): access_type = "Sosmed Only"
                 elif user_token.startswith("FULL-"): access_type = "Full Access"
                 st.success(f"💎 Premium Active: {access_type}")
-                # Menggunakan API Key Rahasia Anda
+                # Mengambil API Key Rahasia dari Secrets
                 if "Groq" in vendor: final_key = st.secrets["GROQ_API_KEY"]; selected_model = "meta-llama/llama-4-scout-17b-16e-instruct"
                 elif "Google" in vendor: final_key = st.secrets["GEMINI_API_KEY"]; selected_model = "gemini-1.5-flash"
                 elif "OpenAI" in vendor: final_key = st.secrets["OPENAI_API_KEY"]; selected_model = "gpt-4o"
@@ -94,18 +104,33 @@ with st.sidebar:
         except: st.error("Token System Error.")
 
     st.divider()
+    
+    # --- PILIHAN PLATFORM LENGKAP UNTUK INFLUENCER ---
     platform = st.selectbox("Target Platform:", 
-        ("Adobe Stock", "Shutterstock", "Instagram Caption", "TikTok Script", "YouTube Shorts", "LinkedIn Post", "Pinterest Pin", "Facebook Ads"))
+        (
+            "Adobe Stock", 
+            "Shutterstock", 
+            "Instagram Caption", 
+            "TikTok Script", 
+            "YouTube Shorts", 
+            "X (Twitter) Thread",   # BARU
+            "Threads Post",         # BARU
+            "LinkedIn Post", 
+            "Pinterest Pin", 
+            "Facebook Ads",
+            "Medium/Blog Intro"     # BARU
+        ))
+    
     output_lang = st.selectbox("Output Language:", ("English", "Indonesian", "Spanish", "French", "German", "Japanese", "Korean", "Arabic"))
     
     tone = ""
     specific_niche, custom_info = "", ""
     if platform not in ["Adobe Stock", "Shutterstock"]:
-        tone = st.selectbox("Tone of Voice:", ("Viral & Catchy", "Professional", "Casual/Friendly", "Urgent/Sales", "Funny"))
-        specific_niche = st.selectbox("Content Niche:", ("Traveling", "Food", "Fashion", "Business/Tech", "Health", "Lifestyle", "Product Promotion"))
+        tone = st.selectbox("Tone of Voice:", ("Viral & Catchy", "Professional", "Casual/Friendly", "Urgent/Sales", "Funny/Humorous", "Inspirational"))
+        specific_niche = st.selectbox("Content Niche:", ("Traveling", "Food & Beverage", "Fashion & Beauty", "Business & Tech", "Health & Wellness", "Lifestyle & Vlog", "Product Promotion", "Educational"))
         custom_info = st.text_input("Extra Context (Optional):")
 
-# --- LOGIKA ENGINE AI ---
+# 5. LOGIKA ENGINE AI
 def run_ai_engine(api_key, provider, model_name, prompt):
     try:
         if "Groq" in provider:
@@ -117,17 +142,18 @@ def run_ai_engine(api_key, provider, model_name, prompt):
     except Exception as e:
         return f"AI Error: {str(e)}"
 
-# --- MAIN AREA ---
+# 6. MAIN AREA (TAMPILAN UTAMA)
 st.title("✨ Universal AI Metadata Engine")
 
 if access_mode == "Free (Standard)":
-    st.info("💡 Pro Tips: Upgrade ke Premium untuk upload unlimited dan akses prioritas server tanpa input API Key sendiri.")
+    st.info("💡 Pro Tips: Upgrade ke Premium untuk akses semua fitur Sosmed & Stock tanpa limit dan tanpa input API Key manual.")
     if st.button("Lihat Harga & Detail Paket 💎"): show_subscription_tiers()
 
 uploaded_files = st.file_uploader("Upload Assets (Max 10 files per batch for optimal stability)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
 if st.button("RUN AI GENERATOR 🚀"):
     is_allowed = False
+    # Logika Cek Akses Tier
     if access_mode == "Free (Standard)" or access_type == "Full Access": is_allowed = True
     elif access_type == "Stock Only" and platform in ["Adobe Stock", "Shutterstock"]: is_allowed = True
     elif access_type == "Sosmed Only" and platform not in ["Adobe Stock", "Shutterstock"]: is_allowed = True
@@ -151,7 +177,7 @@ if st.button("RUN AI GENERATOR 🚀"):
                 with col2:
                     st.write(f"⏳ Generating metadata...")
                     
-                    # --- PROMPT FIX FOR ADOBE STOCK (CLEAN FORMAT) ---
+                    # --- PROMPT LOGIC (STRATEGI KONTEN) ---
                     if platform in ["Adobe Stock", "Shutterstock"]:
                         prompt = f"""
                         Analyze this image for Stock Photography Metadata.
@@ -164,12 +190,27 @@ if st.button("RUN AI GENERATOR 🚀"):
                         Target: {platform}
                         Image: '{file.name}'
                         """
+                    elif platform == "X (Twitter) Thread":
+                        prompt = f"""
+                        You are a Twitter/X influencer expert. Create a viral THREAD based on this image.
+                        Tone: {tone} | Niche: {specific_niche} | Lang: {output_lang}
+                        
+                        Format strictly:
+                        Tweet 1: (Hook that grabs attention)
+                        Tweet 2: (Value/Context from image)
+                        Tweet 3: (Insight/Tip)
+                        Tweet 4: (Call to Action)
+                        
+                        Context: {custom_info}
+                        """
                     else:
+                        # Prompt umum untuk IG, TikTok, LinkedIn, dll
                         prompt = f"Social Media Expert. Target: {platform} | Tone: {tone} | Niche: {specific_niche} | Lang: {output_lang}. Extra: {custom_info}. Create viral content based on '{file.name}'."
                     
                     result = run_ai_engine(final_key, vendor, selected_model, prompt)
                     st.text_area("Result:", value=result, height=350, key=f"t_{file.name}")
             
+            # --- JEDA OTOMATIS (SERVER OPTIMIZATION) ---
             if idx < total - 1:
                 with st.spinner(f"Processing next item... (Optimizing server load)"):
                     time.sleep(3)
