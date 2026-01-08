@@ -4,23 +4,17 @@ import google.generativeai as genai
 from openai import OpenAI
 import time
 
-# 1. KONFIGURASI HALAMAN & TEMA
+# 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="Universal AI Metadata Pro", page_icon="✨", layout="wide")
 
-# CSS untuk tampilan profesional dan Iklan
+# CSS (Tampilan Profesional)
 st.markdown("""
     <style>
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
     .stButton>button {
         background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
         color: white; border-radius: 12px; border: none; font-weight: 600; width: 100%;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
-    .ad-container {
-        background-color: #161B26; border: 1px dashed #3B82F6;
-        padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;
-    }
-    [data-testid="stSidebar"] { background-color: #161B26; border-right: 1px solid #1F2937; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -34,11 +28,8 @@ with st.sidebar:
     
     final_key = None
     selected_model = None
-
     if access_mode == "Free (With Ads)":
-        st.info(f"Using {vendor}. Please provide your API Key.")
         final_key = st.text_input(f"Your {vendor} API Key:", type="password")
-        # Pemilihan model otomatis untuk user gratis
         if vendor == "Groq (Llama 4)": selected_model = "meta-llama/llama-4-scout-17b-16e-instruct"
         elif vendor == "Google (Gemini)": selected_model = "gemini-1.5-flash"
         elif vendor == "OpenAI (GPT-4o)": selected_model = "gpt-4o-mini"
@@ -47,28 +38,30 @@ with st.sidebar:
         if member_pass == "MEMBER2026":
             st.success("💎 Premium Active!")
             try:
-                if vendor == "Groq (Llama 4)":
-                    final_key = st.secrets["GROQ_API_KEY"]
-                    selected_model = "meta-llama/llama-4-scout-17b-16e-instruct"
-                elif vendor == "Google (Gemini)":
-                    final_key = st.secrets["GEMINI_API_KEY"]
-                    selected_model = "gemini-1.5-flash"
-                elif vendor == "OpenAI (GPT-4o)":
-                    final_key = st.secrets["OPENAI_API_KEY"]
-                    selected_model = "gpt-4o"
-            except:
-                st.error("API Key not found in Secrets!")
-        elif member_pass:
-            st.error("Invalid Password")
+                if vendor == "Groq (Llama 4)": final_key = st.secrets["GROQ_API_KEY"]; selected_model = "meta-llama/llama-4-scout-17b-16e-instruct"
+                elif vendor == "Google (Gemini)": final_key = st.secrets["GEMINI_API_KEY"]; selected_model = "gemini-1.5-flash"
+                elif vendor == "OpenAI (GPT-4o)": final_key = st.secrets["OPENAI_API_KEY"]; selected_model = "gpt-4o"
+            except: st.error("API Key not found in Secrets!")
 
     st.divider()
-    # DROPDOWN PLATFORM LUAS
+    
+    # PILIHAN PLATFORM & NICHE
     platform = st.selectbox("Target Platform:", 
         ("Adobe Stock", "Shutterstock", "Instagram Caption", "TikTok Script", "Facebook Ads"))
     
-    niche = ""
+    # --- FITUR BARU: PILIHAN BAHASA ---
+    output_lang = st.selectbox("Output Language:", (
+        "English", "Indonesian", "Spanish", "French", "German", "Japanese", "Korean", "Arabic"
+    ))
+    
+    specific_niche = ""
+    custom_info = ""
     if platform in ["Instagram Caption", "TikTok Script", "Facebook Ads"]:
-        niche = st.text_input("Describe Niche (e.g., Food, Travel, Tech):")
+        specific_niche = st.selectbox("Pilih Niche Konten:", (
+            "Traveling/Nature", "Food/Culinary", "Fashion/Beauty", "Business/Startup", 
+            "Tech/Gadget", "Health/Fitness", "Personal Branding", "Product Promotion"
+        ))
+        custom_info = st.text_input("Info Tambahan (Opsional):", placeholder="Diskon, lokasi, dll")
 
 # 3. LOGIKA ENGINE AI
 def run_ai_engine(api_key, provider, model_name, prompt):
@@ -89,45 +82,45 @@ def run_ai_engine(api_key, provider, model_name, prompt):
 # 4. TAMPILAN UTAMA
 st.title("✨ Universal AI Metadata Engine")
 
-# Tampilan Iklan Kondisional
 if access_mode == "Free (With Ads)":
     st.markdown("""
-        <div class="ad-container">
-            <h4 style="color: #3B82F6;">🚀 Upgrade to Premium for No Ads</h4>
-            <p>Get instant access without providing your own API Key.</p>
-            <a href="https://hadisyh.my.id/bayar" style="color: #8B5CF6; font-weight: bold;">Upgrade Now</a>
+        <div style="background-color: #161B26; padding: 15px; border: 1px dashed #3B82F6; border-radius: 12px; text-align: center; margin-bottom: 25px;">
+            <p style="color: #6B7280; font-size: 12px;">ADVERTISEMENT</p>
+            <h4 style="color: #3B82F6;">Upgrade to Premium for No Ads</h4>
+            <a href="https://hadisyh.my.id/bayar" target="_blank" style="color: #8B5CF6; font-weight: bold;">Upgrade Now</a>
         </div>
     """, unsafe_allow_html=True)
 
-uploaded_files = st.file_uploader("Upload Assets (JPG, PNG)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
+uploaded_files = st.file_uploader("Upload Assets", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
 if st.button("RUN AI GENERATOR 🚀"):
     if not final_key:
-        st.error("Please provide API Key or Member Password in the sidebar!")
+        st.error("Please provide API Key or Member Password!")
     elif uploaded_files:
         if access_mode == "Free (With Ads)":
-            with st.spinner("Processing with Ads..."):
-                time.sleep(2) # Jeda sedikit agar iklan terlihat
+            with st.spinner("Processing with Ads..."): time.sleep(2)
         
         for file in uploaded_files:
             with st.expander(f"Result: {file.name}", expanded=True):
                 col1, col2 = st.columns([1, 2])
-                with col1:
-                    st.image(file, use_container_width=True)
+                with col1: st.image(file, use_container_width=True)
                 with col2:
-                    # Dinamis Prompt berdasarkan pilihan Dropdown
-                    if platform == "Adobe Stock":
-                        prompt = f"Expert Stock SEO. Create Title (70 chars) and 30 Keywords for image '{file.name}' in English."
-                    elif platform == "Shutterstock":
-                        prompt = f"Expert Stock SEO. Create Description (200 chars) and 50 Tags for image '{file.name}' in English."
+                    # PROMPT DINAMIS (Metadata Stok selalu Inggris, Sosmed bebas)
+                    if "Stock" in platform or "Shutterstock" in platform:
+                        actual_lang = "English"
+                        prompt = f"Expert Stock SEO. Create {platform} Title/Description & Keywords for '{file.name}' in {actual_lang}."
                     else:
-                        prompt = f"Social Media Expert. Create a viral {platform} for niche '{niche}' based on image '{file.name}'. Include hashtags and CTA. English language."
+                        actual_lang = output_lang
+                        prompt = f"""
+                        Act as a Social Media Expert. 
+                        Target: {platform} | Niche: {specific_niche} | Language: {actual_lang}
+                        Context: {file.name} | Info: {custom_info}
+                        Task: Create an engaging caption in {actual_lang} with hook, viral hashtags, and CTA.
+                        """
 
                     try:
                         result = run_ai_engine(final_key, vendor, selected_model, prompt)
-                        st.text_area("Generated Metadata (Editable):", value=result, height=250, key=f"t_{file.name}")
+                        st.text_area(f"Output ({actual_lang}):", value=result, height=250, key=f"t_{file.name}")
                     except Exception as e:
                         st.error(f"Error: {e}")
         st.balloons()
-    else:
-        st.warning("Please upload files first.")
