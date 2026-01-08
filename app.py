@@ -7,59 +7,84 @@ import time
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="Universal AI Metadata Pro", page_icon="✨", layout="wide")
 
-# CSS (Tampilan Profesional & Pop-Up)
+# CSS UNTUK UI MEWAH & DARK THEME
 st.markdown("""
     <style>
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
+    
+    /* Style Tombol Utama */
     .stButton>button {
         background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
         color: white; border-radius: 12px; border: none; font-weight: 600; width: 100%;
         box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        transition: 0.3s;
     }
+    .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+
+    /* Container Iklan/Promo */
+    .ad-container {
+        background: linear-gradient(145deg, #161B22, #0D1117);
+        border: 1px solid #30363D; padding: 25px; border-radius: 20px;
+        text-align: center; margin-bottom: 30px; border-left: 5px solid #3B82F6;
+    }
+
+    /* Card di dalam Pop-up */
     .tier-card {
-        background-color: #161B26; padding: 20px; border-radius: 15px; 
-        border: 1px solid #3B82F6; text-align: center; height: 100%;
+        background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; 
+        border: 1px solid #30363D; text-align: center; height: 100%;
     }
-    .benefit-list { text-align: left; font-size: 0.9em; margin: 15px 0; color: #9CA3AF; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- FUNGSI POP-UP PENJELASAN TIER ---
+# --- FUNGSI POP-UP PENJELASAN TIER (VISUAL IMPROVED) ---
 @st.dialog("💎 Pilih Paket Premium Anda")
 def show_subscription_tiers():
-    st.write("Dapatkan hasil lebih akurat, tanpa iklan, dan akses model AI tercepat.")
+    st.markdown("<p style='text-align: center; color: #9CA3AF; margin-bottom: 25px;'>Akses model AI tercanggih (Llama 4, Gemini, GPT) tanpa gangguan iklan.</p>", unsafe_allow_html=True)
+    
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown('<div class="tier-card">', unsafe_allow_html=True)
-        st.subheader("📦 Stock")
-        st.title("29rb")
-        st.markdown('<div class="benefit-list">✅ Adobe & Shutterstock<br>✅ Tanpa Iklan<br>✅ SEO Optimized<br>✅ English Support</div>', unsafe_allow_html=True)
-        st.link_button("Subscribe Stock", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Stock&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20STOCK%20(29rb).")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("""
+            <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid #3B82F6; text-align: center;">
+                <h3 style="color: #3B82F6; margin-bottom: 0;">📦 STOCK</h3>
+                <h1 style="margin: 10px 0;">29<span style="font-size: 0.5em;">rb</span></h1>
+                <div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8; margin-bottom: 20px;">
+                    ✅ Adobe & Shutterstock<br>✅ SEO Tagging Expert<br>✅ Tanpa Iklan<br>✅ English Language
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        st.link_button("Subscribe Stock", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Stock&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20STOCK%20(29rb).", use_container_width=True)
 
     with col2:
-        st.markdown('<div class="tier-card" style="border: 2px solid #8B5CF6;">', unsafe_allow_html=True)
-        st.subheader("📱 Sosmed")
-        st.title("29rb")
-        st.markdown('<div class="benefit-list">✅ IG, TikTok, FB<br>✅ Multi-Language<br>✅ Niche Specific<br>✅ Viral Hashtags</div>', unsafe_allow_html=True)
-        st.link_button("Subscribe Sosmed", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Sosmed&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20SOSMED%20(29rb).")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("""
+            <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid #8B5CF6; text-align: center;">
+                <h3 style="color: #8B5CF6; margin-bottom: 0;">📱 SOSMED</h3>
+                <h1 style="margin: 10px 0;">29<span style="font-size: 0.5em;">rb</span></h1>
+                <div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8; margin-bottom: 20px;">
+                    ✅ IG, TikTok, FB Ads<br>✅ Viral Hook & Hashtags<br>✅ 8+ Pilihan Bahasa<br>✅ Niche Specific
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        st.link_button("Subscribe Sosmed", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Sosmed&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20SOSMED%20(29rb).", use_container_width=True)
 
     with col3:
-        st.markdown('<div class="tier-card">', unsafe_allow_html=True)
-        st.subheader("🔥 Full")
-        st.title("49rb")
-        st.markdown('<div class="benefit-list">✅ Akses Semua Fitur<br>✅ Prioritas Llama 4<br>✅ Unlimited Models<br>✅ Best Value</div>', unsafe_allow_html=True)
-        st.link_button("Subscribe Full", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Full&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20FULL%20(49rb).")
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("""
+            <div style="background: linear-gradient(145deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1)); padding: 20px; border-radius: 20px; border: 2px solid #F59E0B; text-align: center; position: relative;">
+                <span style="background: #F59E0B; color: black; font-size: 0.7em; padding: 2px 10px; border-radius: 10px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-weight: bold;">BEST VALUE</span>
+                <h3 style="color: #F59E0B; margin-bottom: 0;">🔥 FULL</h3>
+                <h1 style="margin: 10px 0;">49<span style="font-size: 0.5em;">rb</span></h1>
+                <div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8; margin-bottom: 20px;">
+                    ✅ Akses Semua Fitur<br>✅ Prioritas Llama 4<br>✅ Unlimited Models<br>✅ Support 24/7
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        st.link_button("Subscribe Full Access", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Full&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20FULL%20(49rb).", use_container_width=True)
 
-# 2. SIDEBAR: KONTROL AKSES & TIER
+# 2. SIDEBAR: KONTROL AKSES
 with st.sidebar:
     st.header("🌐 AI CONTROL CENTER")
     access_mode = st.radio("Access Mode:", ("Free (With Ads)", "Premium (Token Access)"))
     
-    # TOMBOL INFO TIER DI SIDEBAR
     if st.button("ℹ️ Lihat Manfaat & Harga"):
         show_subscription_tiers()
     
@@ -68,7 +93,6 @@ with st.sidebar:
     
     final_key = None
     selected_model = None
-    is_premium = False
     access_type = "Free"
 
     if access_mode == "Free (With Ads)":
@@ -81,7 +105,6 @@ with st.sidebar:
         try:
             valid_tokens = st.secrets["VALID_TOKENS"].split(",") 
             if user_token in valid_tokens and user_token != "":
-                is_premium = True
                 if user_token.startswith("STK-"): access_type = "Stock Only"
                 elif user_token.startswith("SOC-"): access_type = "Sosmed Only"
                 elif user_token.startswith("FULL-"): access_type = "Full Access"
@@ -91,7 +114,7 @@ with st.sidebar:
                 elif vendor == "Google (Gemini)": final_key = st.secrets["GEMINI_API_KEY"]; selected_model = "gemini-1.5-flash"
                 elif vendor == "OpenAI (GPT-4o)": final_key = st.secrets["OPENAI_API_KEY"]; selected_model = "gpt-4o"
             elif user_token: st.error("Invalid or Expired Token!")
-        except: st.error("Token System Error.")
+        except: st.error("Token System Error. Check Secrets.")
 
     st.divider()
     platform = st.selectbox("Target Platform:", ("Adobe Stock", "Shutterstock", "Instagram Caption", "TikTok Script", "Facebook Ads"))
@@ -101,7 +124,7 @@ with st.sidebar:
     custom_info = ""
     if platform in ["Instagram Caption", "TikTok Script", "Facebook Ads"]:
         specific_niche = st.selectbox("Content Niche:", ("Traveling", "Food", "Fashion", "Business", "Tech", "Health", "Product Promotion"))
-        custom_info = st.text_input("Extra Info (e.g. Discount 50%, Location):")
+        custom_info = st.text_input("Extra Info (Optional):")
 
 # 3. LOGIKA ENGINE AI
 def run_ai_engine(api_key, provider, model_name, prompt):
@@ -115,13 +138,15 @@ def run_ai_engine(api_key, provider, model_name, prompt):
 # 4. TAMPILAN UTAMA
 st.title("✨ Universal AI Metadata Engine")
 
-# BANNER UTAMA UNTUK FREE USER
 if access_mode == "Free (With Ads)":
-    with st.container(border=True):
-        st.subheader("🚀 Tingkatkan Kreativitas Anda ke Level Premium")
-        st.write("Hasilkan metadata dan caption viral tanpa iklan, tanpa API Key ribet, dan akses model AI tercanggih.")
-        if st.button("Lihat Harga & Detail Paket 💎"):
-            show_subscription_tiers()
+    st.markdown("""
+        <div class="ad-container">
+            <h3 style="color: #3B82F6; margin-top: 0;">🚀 Tingkatkan ke Premium</h3>
+            <p>Hasilkan konten viral tanpa iklan & tanpa ribet input API Key pribadi.</p>
+        </div>
+    """, unsafe_allow_html=True)
+    if st.button("Lihat Harga & Detail Paket 💎"):
+        show_subscription_tiers()
 
 uploaded_files = st.file_uploader("Upload Assets", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
