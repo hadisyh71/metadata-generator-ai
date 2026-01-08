@@ -7,7 +7,7 @@ import time
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="Universal AI Metadata Pro", page_icon="✨", layout="wide")
 
-# CSS (Tampilan Profesional & Dark Mode)
+# CSS (Tampilan Profesional & Pop-Up)
 st.markdown("""
     <style>
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
@@ -16,18 +16,52 @@ st.markdown("""
         color: white; border-radius: 12px; border: none; font-weight: 600; width: 100%;
         box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
-    .ad-container {
-        background-color: #161B26; border: 1px dashed #3B82F6;
-        padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 25px;
+    .tier-card {
+        background-color: #161B26; padding: 20px; border-radius: 15px; 
+        border: 1px solid #3B82F6; text-align: center; height: 100%;
     }
-    .tier-label { font-size: 0.8em; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
+    .benefit-list { text-align: left; font-size: 0.9em; margin: 15px 0; color: #9CA3AF; }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. SIDEBAR: KONTROL AKSES, MODEL, & TIER
+# --- FUNGSI POP-UP PENJELASAN TIER ---
+@st.dialog("💎 Pilih Paket Premium Anda")
+def show_subscription_tiers():
+    st.write("Dapatkan hasil lebih akurat, tanpa iklan, dan akses model AI tercepat.")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown('<div class="tier-card">', unsafe_allow_html=True)
+        st.subheader("📦 Stock")
+        st.title("29rb")
+        st.markdown('<div class="benefit-list">✅ Adobe & Shutterstock<br>✅ Tanpa Iklan<br>✅ SEO Optimized<br>✅ English Support</div>', unsafe_allow_html=True)
+        st.link_button("Subscribe Stock", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Stock&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20STOCK%20(29rb).")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col2:
+        st.markdown('<div class="tier-card" style="border: 2px solid #8B5CF6;">', unsafe_allow_html=True)
+        st.subheader("📱 Sosmed")
+        st.title("29rb")
+        st.markdown('<div class="benefit-list">✅ IG, TikTok, FB<br>✅ Multi-Language<br>✅ Niche Specific<br>✅ Viral Hashtags</div>', unsafe_allow_html=True)
+        st.link_button("Subscribe Sosmed", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Sosmed&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20SOSMED%20(29rb).")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col3:
+        st.markdown('<div class="tier-card">', unsafe_allow_html=True)
+        st.subheader("🔥 Full")
+        st.title("49rb")
+        st.markdown('<div class="benefit-list">✅ Akses Semua Fitur<br>✅ Prioritas Llama 4<br>✅ Unlimited Models<br>✅ Best Value</div>', unsafe_allow_html=True)
+        st.link_button("Subscribe Full", "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Full&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Paket%20FULL%20(49rb).")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+# 2. SIDEBAR: KONTROL AKSES & TIER
 with st.sidebar:
     st.header("🌐 AI CONTROL CENTER")
     access_mode = st.radio("Access Mode:", ("Free (With Ads)", "Premium (Token Access)"))
+    
+    # TOMBOL INFO TIER DI SIDEBAR
+    if st.button("ℹ️ Lihat Manfaat & Harga"):
+        show_subscription_tiers()
     
     st.divider()
     vendor = st.selectbox("Choose AI Provider:", ("Groq (Llama 4)", "Google (Gemini)", "OpenAI (GPT-4o)"))
@@ -43,33 +77,25 @@ with st.sidebar:
         elif vendor == "Google (Gemini)": selected_model = "gemini-1.5-flash"
         elif vendor == "OpenAI (GPT-4o)": selected_model = "gpt-4o-mini"
     else:
-        # SISTEM TOKEN 3 TIER
         user_token = st.text_input("Enter Your Member Token:", type="password")
         try:
             valid_tokens = st.secrets["VALID_TOKENS"].split(",") 
             if user_token in valid_tokens and user_token != "":
                 is_premium = True
-                # Logika Cek Tier berdasarkan Prefix
                 if user_token.startswith("STK-"): access_type = "Stock Only"
                 elif user_token.startswith("SOC-"): access_type = "Sosmed Only"
                 elif user_token.startswith("FULL-"): access_type = "Full Access"
-                else: access_type = "Standard Premium"
-
+                
                 st.success(f"💎 Premium Active: {access_type}")
                 if vendor == "Groq (Llama 4)": final_key = st.secrets["GROQ_API_KEY"]; selected_model = "meta-llama/llama-4-scout-17b-16e-instruct"
                 elif vendor == "Google (Gemini)": final_key = st.secrets["GEMINI_API_KEY"]; selected_model = "gemini-1.5-flash"
                 elif vendor == "OpenAI (GPT-4o)": final_key = st.secrets["OPENAI_API_KEY"]; selected_model = "gpt-4o"
-            elif user_token:
-                st.error("Invalid or Expired Token!")
-        except:
-            st.error("Token System Error. Check Secrets.")
+            elif user_token: st.error("Invalid or Expired Token!")
+        except: st.error("Token System Error.")
 
     st.divider()
-    platform = st.selectbox("Target Platform:", 
-        ("Adobe Stock", "Shutterstock", "Instagram Caption", "TikTok Script", "Facebook Ads"))
-    
-    output_lang = st.selectbox("Output Language:", 
-        ("English", "Indonesian", "Spanish", "French", "German", "Japanese", "Korean", "Arabic"))
+    platform = st.selectbox("Target Platform:", ("Adobe Stock", "Shutterstock", "Instagram Caption", "TikTok Script", "Facebook Ads"))
+    output_lang = st.selectbox("Output Language:", ("English", "Indonesian", "Spanish", "French", "German", "Japanese", "Korean", "Arabic"))
     
     specific_niche = ""
     custom_info = ""
@@ -89,38 +115,24 @@ def run_ai_engine(api_key, provider, model_name, prompt):
 # 4. TAMPILAN UTAMA
 st.title("✨ Universal AI Metadata Engine")
 
-# INFO PREMIUM & EMAIL OTOMATIS
+# BANNER UTAMA UNTUK FREE USER
 if access_mode == "Free (With Ads)":
-    st.markdown(f"""
-        <div class="ad-container">
-            <h3 style="color: #3B82F6; margin-top: 0;">Mau Akses Premium?</h3>
-            <p>Pilih paket: <b>Stock (29rb)</b>, <b>Sosmed (29rb)</b>, atau <b>Full (49rb)</b>.</p>
-            <div style="background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px; border: 1px solid #3B82F6; display: inline-block;">
-                <p style="margin: 0; font-size: 1.1em;">
-                    Email ke: <a href="mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Metadata%20Pro&body=Halo%20Admin,%20saya%20tertarik%20membeli%20Token%20Member.%0A%0APaket%20yang%20dipilih:%20(Stock/Sosmed/Full)%0AMohon%20instruksi%20pembayarannya." 
-                    style="color: #00f2ff; font-weight: bold; text-decoration: none;">hadisyh71@gmail.com</a>
-                </p>
-            </div>
-            <p style="margin-top: 10px; font-size: 0.8em; color: #6B7280;">Klik email di atas untuk kirim request otomatis.</p>
-        </div>
-    """, unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader("🚀 Tingkatkan Kreativitas Anda ke Level Premium")
+        st.write("Hasilkan metadata dan caption viral tanpa iklan, tanpa API Key ribet, dan akses model AI tercanggih.")
+        if st.button("Lihat Harga & Detail Paket 💎"):
+            show_subscription_tiers()
 
 uploaded_files = st.file_uploader("Upload Assets", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
 if st.button("RUN AI GENERATOR 🚀"):
-    # VALIDASI TIER
     is_allowed = False
-    if access_mode == "Free (With Ads)" or access_type == "Full Access":
-        is_allowed = True
-    elif access_type == "Stock Only" and platform in ["Adobe Stock", "Shutterstock"]:
-        is_allowed = True
-    elif access_type == "Sosmed Only" and platform in ["Instagram Caption", "TikTok Script", "Facebook Ads"]:
-        is_allowed = True
+    if access_mode == "Free (With Ads)" or access_type == "Full Access": is_allowed = True
+    elif access_type == "Stock Only" and platform in ["Adobe Stock", "Shutterstock"]: is_allowed = True
+    elif access_type == "Sosmed Only" and platform in ["Instagram Caption", "TikTok Script", "Facebook Ads"]: is_allowed = True
     
-    if not final_key:
-        st.error("Please provide Token or API Key!")
-    elif not is_allowed:
-        st.error(f"Maaf, paket '{access_type}' Anda tidak mencakup platform '{platform}'. Silakan upgrade ke Paket Komplit!")
+    if not final_key: st.error("Provide Token or API Key!")
+    elif not is_allowed: st.error(f"Maaf, paket '{access_type}' Anda tidak mencakup platform '{platform}'. Silakan upgrade paket!")
     elif uploaded_files:
         if access_mode == "Free (With Ads)": time.sleep(2)
         for file in uploaded_files:
@@ -132,9 +144,7 @@ if st.button("RUN AI GENERATOR 🚀"):
                         prompt = f"Expert Stock SEO. Create {platform} metadata for '{file.name}' in English."
                     else:
                         prompt = f"Social Media Expert. Target: {platform} | Niche: {specific_niche} | Lang: {output_lang}. Info: {custom_info}. Create viral caption."
-                    
                     try:
                         result = run_ai_engine(final_key, vendor, selected_model, prompt)
                         st.text_area("Output:", value=result, height=250, key=f"t_{file.name}")
                     except Exception as e: st.error(f"Error: {e}")
-        st.balloons()
