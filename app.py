@@ -121,11 +121,9 @@ def run_ai_engine(api_key, provider, model_name, prompt):
 st.title("✨ Universal AI Metadata Engine")
 
 if access_mode == "Free (Standard)":
-    # MENGHILANGKAN KATA "API FREE", MENGGANTI DENGAN "TIPS"
     st.info("💡 Pro Tips: Upgrade ke Premium untuk upload unlimited dan akses prioritas server tanpa input API Key sendiri.")
     if st.button("Lihat Harga & Detail Paket 💎"): show_subscription_tiers()
 
-# LABEL DIGANTI: TIDAK MENYEBUT "FREE API" TAPI "OPTIMAL PERFORMANCE"
 uploaded_files = st.file_uploader("Upload Assets (Max 10 files per batch for optimal stability)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
 if st.button("RUN AI GENERATOR 🚀"):
@@ -152,15 +150,26 @@ if st.button("RUN AI GENERATOR 🚀"):
                 with col1: st.image(file, use_container_width=True)
                 with col2:
                     st.write(f"⏳ Generating metadata...")
+                    
+                    # --- PROMPT FIX FOR ADOBE STOCK (CLEAN FORMAT) ---
                     if platform in ["Adobe Stock", "Shutterstock"]:
-                        prompt = f"Expert Stock SEO. Create {platform} metadata (Title, Description, 50 Keywords) for '{file.name}' in English. Format: CSV ready."
+                        prompt = f"""
+                        Analyze this image for Stock Photography Metadata.
+                        Output strictly in this format ONLY (No intro, no markdown code blocks, just text):
+                        
+                        Title: [Write a clear, SEO-friendly title]
+                        Description: [Write a detailed description min 50 words]
+                        Keywords: [List 50 keywords separated by commas]
+                        
+                        Target: {platform}
+                        Image: '{file.name}'
+                        """
                     else:
                         prompt = f"Social Media Expert. Target: {platform} | Tone: {tone} | Niche: {specific_niche} | Lang: {output_lang}. Extra: {custom_info}. Create viral content based on '{file.name}'."
                     
                     result = run_ai_engine(final_key, vendor, selected_model, prompt)
-                    st.text_area("Result:", value=result, height=250, key=f"t_{file.name}")
+                    st.text_area("Result:", value=result, height=350, key=f"t_{file.name}")
             
-            # --- JEDA DISAMARKAN JADI "OPTIMIZING SERVER" ---
             if idx < total - 1:
                 with st.spinner(f"Processing next item... (Optimizing server load)"):
                     time.sleep(3)
