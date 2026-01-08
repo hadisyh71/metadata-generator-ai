@@ -7,28 +7,13 @@ import time
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="Universal AI Metadata Pro", page_icon="✨", layout="wide")
 
-# 2. CSS FINAL: UI MEWAH & FIX SIDEBAR BUTTON
+# 2. CSS FINAL: UI MEWAH (TANPA HIDE MENU AGAR TOMBOL AMAN)
 st.markdown("""
     <style>
-    /* 1. HIDE ELEMENT BAWAAN TAPI JANGAN HILANGKAN TOMBOL SIDEBAR */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    
-    /* Menyembunyikan Menu Kanan (Profil & Settings) saja */
-    [data-testid="stToolbar"] {
-        visibility: hidden;
-        display: none;
-    }
-    
-    /* Menghilangkan garis warna-warni di atas, tapi header tetap ada buat tombol sidebar */
-    [data-testid="stHeader"] {
-        background: transparent;
-    }
-
-    /* 2. THEME COLORS */
+    /* --- THEME COLORS --- */
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
     
-    /* 3. BUTTON STYLING */
+    /* --- BUTTON STYLING --- */
     .stButton>button {
         background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
         color: white; border-radius: 12px; border: none; font-weight: 600; width: 100%;
@@ -37,7 +22,7 @@ st.markdown("""
     }
     .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
     
-    /* 4. TIER CARD STYLING */
+    /* --- TIER CARD STYLING --- */
     .tier-wrapper {
         display: flex; flex-direction: column; height: 100%;
         background: rgba(255,255,255,0.03); padding: 25px; 
@@ -53,7 +38,7 @@ st.markdown("""
     }
     .sub-link:hover { opacity: 0.8; transform: scale(1.02); }
     
-    /* 5. TIER COLORS */
+    /* --- TIER SPECIFIC COLORS --- */
     .bg-stock { border: 1px solid #3B82F6; } .btn-stock { background: #3B82F6; }
     .bg-sosmed { border: 1px solid #8B5CF6; } .btn-sosmed { background: #8B5CF6; }
     .bg-full { border: 2px solid #F59E0B; background: rgba(245, 158, 11, 0.05); } 
@@ -115,7 +100,7 @@ with st.sidebar:
 
     st.divider()
     
-    # --- PILIHAN PLATFORM LENGKAP (VERSI BERSIH) ---
+    # --- PILIHAN PLATFORM LENGKAP ---
     platform = st.selectbox("Target Platform:", 
         (
             "Adobe Stock", 
