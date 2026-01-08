@@ -13,7 +13,7 @@ st.markdown("""
     /* --- HIDE STREAMLIT DEFAULT ELEMENTS (CLEAN LOOK) --- */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;} /* Ini kunci agar pop-up profil tidak muncul */
+    header {visibility: hidden;}
     
     /* --- THEME COLORS --- */
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
@@ -105,7 +105,7 @@ with st.sidebar:
 
     st.divider()
     
-    # --- PILIHAN PLATFORM LENGKAP UNTUK INFLUENCER ---
+    # --- PILIHAN PLATFORM LENGKAP (VERSI BERSIH) ---
     platform = st.selectbox("Target Platform:", 
         (
             "Adobe Stock", 
@@ -113,12 +113,12 @@ with st.sidebar:
             "Instagram Caption", 
             "TikTok Script", 
             "YouTube Shorts", 
-            "X (Twitter) Thread",   # BARU
-            "Threads Post",         # BARU
+            "X (Twitter) Thread",
+            "Threads Post",
             "LinkedIn Post", 
             "Pinterest Pin", 
             "Facebook Ads",
-            "Medium/Blog Intro"     # BARU
+            "Medium/Blog Intro"
         ))
     
     output_lang = st.selectbox("Output Language:", ("English", "Indonesian", "Spanish", "French", "German", "Japanese", "Korean", "Arabic"))
