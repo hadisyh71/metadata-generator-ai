@@ -123,13 +123,13 @@ def run_ai_engine(api_key, provider, model_name, prompt):
 st.title("✨ Universal AI Metadata Engine")
 
 if access_mode == "Free (With Ads)":
-    st.info("💡 Jalur Gratis: Maksimal 3 foto sekaligus. Gunakan Premium untuk unlimited.")
+    st.info("💡 Tips: Untuk upload banyak file sekaligus, gunakan API Key Premium agar proses lebih cepat.")
     if st.button("Lihat Harga & Detail Paket 💎"): show_subscription_tiers()
 
-uploaded_files = st.file_uploader("Upload Assets (Max 10 for stability)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
+uploaded_files = st.file_uploader("Upload Assets (Max 10 disarankan untuk API Free)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
 
 if st.button("RUN AI GENERATOR 🚀"):
-    # VALIDASI AKSES & JUMLAH FILE
+    # VALIDASI AKSES
     is_allowed = False
     if access_mode == "Free (With Ads)" or access_type == "Full Access": is_allowed = True
     elif access_type == "Stock Only" and platform in ["Adobe Stock", "Shutterstock"]: is_allowed = True
@@ -137,8 +137,6 @@ if st.button("RUN AI GENERATOR 🚀"):
     
     if not final_key: 
         st.error("Silakan masukkan API Key (Free) atau Token (Premium) di sidebar!")
-    elif len(uploaded_files) > 10:
-        st.warning("Terlalu banyak file! Silakan upload maksimal 10 file agar proses stabil.")
     elif not is_allowed: 
         st.error(f"Paket '{access_type}' Anda tidak mencakup platform '{platform}'.")
     elif uploaded_files:
@@ -146,7 +144,10 @@ if st.button("RUN AI GENERATOR 🚀"):
         total = len(uploaded_files)
         
         for idx, file in enumerate(uploaded_files):
-            with st.expander(f"Processing: {file.name}", expanded=True):
+            # Update progress bar
+            progress_bar.progress((idx) / total)
+            
+            with st.expander(f"Processing: {file.name} ({idx+1}/{total})", expanded=True):
                 col1, col2 = st.columns([1, 2])
                 with col1: st.image(file, use_container_width=True)
                 with col2:
@@ -159,7 +160,13 @@ if st.button("RUN AI GENERATOR 🚀"):
                     result = run_ai_engine(final_key, vendor, selected_model, prompt)
                     st.text_area("Result:", value=result, height=250, key=f"t_{file.name}")
             
-            progress_bar.progress((idx + 1) / total)
+            # --- JEDA 3 DETIK AGAR API TIDAK LIMIT ---
+            # Kita tambahkan jeda jika ini bukan file terakhir
+            if idx < total - 1:
+                with st.spinner(f"Menunggu 3 detik agar API {vendor} aman..."):
+                    time.sleep(3)
         
+        # Progress bar penuh di akhir
+        progress_bar.progress(1.0)
         st.success("✅ Semua Metadata Berhasil Dibuat!")
         st.balloons()
