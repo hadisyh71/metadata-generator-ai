@@ -159,7 +159,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. KAMUS BAHASA (LANGUAGE DICTIONARY)
+# 3. KAMUS BAHASA (LANGUAGE DICTIONARY) - EXPANDED
 # ==========================================
 with st.sidebar:
     app_lang = st.radio("Language / Bahasa:", ("🇮🇩 Indonesia", "🌎 English (Global)"), horizontal=True)
@@ -184,16 +184,31 @@ if app_lang == "🇮🇩 Indonesia":
         "ad_header_text": "🚀 <b>MAU FITUR SULTAN?</b><br><span style='font-size:0.8em;'>Upgrade ke Paket FULL hanya 49rb! Akses Metadata + Prompt Generator.</span>",
         "ad_warning": "📢 Akun Free antrean server lebih lama (Low Priority).",
         
+        # Error Messages (Localized)
+        "err_vendor": "⚠️ Model ini belum tersedia (Coming Soon).",
+        "err_model_select": "❌ Model ini belum tersedia.",
+        "err_api_req": "API Key / Token Wajib Diisi!",
+        "err_idea_req": "Mohon isi ide konten Anda terlebih dahulu.",
+        "err_plan": "Paket '{type}' Anda tidak mencakup '{plat}'. Silakan Upgrade.",
+        "lbl_enter_api": "Masukkan API Key",
+        "help_api": "Dapatkan API Key di dashboard provider terkait.",
+        
         # Prompt Generator Specific
         "pg_mode": "Pilih Mode:",
-        "pg_idea": "Ide Dasar (Indonesia/Inggris):", 
+        "pg_idea": "Ide Dasar:",
+        "pg_placeholder": "Contoh: Kucing cyberpunk naik motor di Jakarta...",
         "pg_style": "Gaya Visual:",
         "pg_target": "Target AI:",
         "pg_ratio": "Rasio:",
         "pg_btn": "GENERATE MANTRA AJAIB ✨",
+        "pg_free_info": "🔓 **Mode Gratis:** Upgrade ke **PROMPT/FULL Access** untuk fitur 'Auto-Enhance' & 'Award Winning Style'.",
+        "pg_upsell": "💡 <a href='mailto:hadisyh71@gmail.com'>Beli Token PROMPT Only (29rb)</a> untuk hasil lebih stabil.",
         
         # Pricing Labels
-        "p_stock_p": "29rb", "p_sosmed_p": "29rb", "p_prompt_p": "29rb", "p_full_p": "49rb",
+        "p_stock_p": "29rb", 
+        "p_sosmed_p": "29rb", 
+        "p_prompt_p": "29rb", 
+        "p_full_p": "49rb",
         "p_btn": "Pilih Paket",
         "p_link_full": "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20Full%20(IDR)",
         
@@ -224,16 +239,31 @@ else:
         "ad_header_text": "🚀 <b>UNLOCK PRO FEATURES?</b><br><span style='font-size:0.8em;'>Get FULL Access for only $9/mo! Metadata + Prompt Tools included.</span>",
         "ad_warning": "📢 Free Tier has lower server priority. Upgrade for lightning speed.",
         
+        # Error Messages (Localized)
+        "err_vendor": "⚠️ This model is Coming Soon.",
+        "err_model_select": "❌ This model is unavailable.",
+        "err_api_req": "API Key / Token Required!",
+        "err_idea_req": "Please enter your content idea first.",
+        "err_plan": "Your Plan '{type}' does not include '{plat}'. Please Upgrade.",
+        "lbl_enter_api": "Enter API Key",
+        "help_api": "Get your API Key from the provider dashboard.",
+        
         # Prompt Generator Specific
         "pg_mode": "Select Mode:",
-        "pg_idea": "Basic Concept:", 
+        "pg_idea": "Basic Concept:",
+        "pg_placeholder": "Example: A cyberpunk cat riding a motorcycle in Jakarta...",
         "pg_style": "Visual Style:",
         "pg_target": "Target AI:",
         "pg_ratio": "Aspect Ratio:",
         "pg_btn": "GENERATE MAGIC PROMPT ✨",
+        "pg_free_info": "🔓 **Free Mode:** Upgrade to **PROMPT/FULL Access** for 'Auto-Enhance' & 'Award Winning Style' features.",
+        "pg_upsell": "💡 <a href='mailto:hadisyh71@gmail.com'>Buy PROMPT Only Token ($5)</a> for stable results.",
         
         # Pricing Labels
-        "p_stock_p": "$5", "p_sosmed_p": "$5", "p_prompt_p": "$5", "p_full_p": "$9",
+        "p_stock_p": "$5", 
+        "p_sosmed_p": "$5", 
+        "p_prompt_p": "$5", 
+        "p_full_p": "$9",
         "p_btn": "Subscribe",
         "p_link_full": "mailto:hadisyh71@gmail.com?subject=Buy%20Full%20Token%20(USD)",
         
@@ -340,13 +370,15 @@ with st.sidebar:
     
     # --- INPUT CREDENTIALS LOGIC ---
     if access_mode == "Free (Standard)":
-        # LOGIKA BYOK (BRING YOUR OWN KEY)
+        # BYOK LOGIC (Pakai Bahasa dari Dictionary)
+        label_api = f"{t['lbl_enter_api']} {vendor.split()[0]}:"
+        
         if "Groq" in vendor:
-            final_key = st.text_input("Enter Groq API Key:", type="password", help="Dapatkan di console.groq.com")
+            final_key = st.text_input(label_api, type="password", help=t['help_api'])
         elif "Google" in vendor:
-            final_key = st.text_input("Enter Gemini API Key:", type="password", help="Dapatkan di aistudio.google.com")
+            final_key = st.text_input(label_api, type="password", help=t['help_api'])
         elif "OpenAI" in vendor:
-            final_key = st.text_input("Enter OpenAI API Key:", type="password", help="Perlu saldo OpenAI")
+            final_key = st.text_input(label_api, type="password", help=t['help_api'])
             
         # IKLAN SIDEBAR (Hanya di Free Mode)
         st.divider()
@@ -471,9 +503,9 @@ with tab1:
         elif access_type == "Stock Only" and platform not in ["Adobe Stock", "Shutterstock"]: is_allowed = False
         
         if not final_key:
-            st.error("API Key / Token Required!")
+            st.error(t['err_api_req'])
         elif not is_allowed:
-            st.error(f"Your Plan '{access_type}' does not include '{platform}'. Please Upgrade.")
+            st.error(t['err_plan'].format(type=access_type, plat=platform))
         elif uploaded_files:
             
             progress = st.progress(0)
@@ -515,7 +547,7 @@ with tab2:
     if access_type == "Full Access" or access_type == "Prompt Only":
         is_prompt_premium = True
     else:
-        st.info("🔓 **Free Mode:** Upgrade ke **PROMPT/FULL Access** untuk fitur 'Auto-Enhance' & 'Award Winning Style'.")
+        st.info(t['pg_free_info'])
 
     col_mode1, col_mode2 = st.columns(2)
     with col_mode1:
@@ -523,7 +555,7 @@ with tab2:
     with col_mode2:
         p_target = st.selectbox(t['pg_target'], ("Midjourney v6", "Dall-E 3", "Leonardo AI", "Stable Diffusion XL", "Runway Gen-2", "Kling AI"))
 
-    p_idea = st.text_area(t['pg_idea'], placeholder="Example: Kucing naik motor di kota tua Jakarta...")
+    p_idea = st.text_area(t['pg_idea'], placeholder=t['pg_placeholder'])
     
     col_opt1, col_opt2 = st.columns(2)
     with col_opt1:
@@ -535,9 +567,9 @@ with tab2:
     if st.button(t['pg_btn'], key="btn_prompt"):
         
         if not final_key:
-            st.error("API Key / Token Required!")
+            st.error(t['err_api_req'])
         elif not p_idea:
-            st.warning("Please enter your idea first.")
+            st.warning(t['err_idea_req'])
         else:
             with st.spinner("Meracik Mantra Ajaib..."):
                 
@@ -554,7 +586,6 @@ with tab2:
                 3. Include lighting and texture details.
                 """
                 
-                # Fitur Spesial Premium (Auto-Enhance)
                 if is_prompt_premium:
                     sys_prompt += " Add 'Award winning, 8k, masterpiece' keywords. Also generate a Negative Prompt block."
                 
@@ -564,4 +595,4 @@ with tab2:
                 st.code(final_prompt, language="markdown")
                 
                 if not is_prompt_premium:
-                    st.markdown(f"<small style='color:#F59E0B;'>💡 <a href='{t['p_link_full']}'>Beli Token PROMPT Only (29rb)</a> untuk hasil lebih stabil.</small>", unsafe_allow_html=True)
+                    st.markdown(f"<small style='color:#F59E0B;'>{t['pg_upsell']}</small>", unsafe_allow_html=True)
