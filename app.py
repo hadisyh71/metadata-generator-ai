@@ -167,11 +167,8 @@ with st.sidebar:
 if app_lang == "🇮🇩 Indonesia":
     t = {
         # General UI
-        "tab1": "📸 Metadata Stok & Sosmed",
-        "tab2": "🎨 AI Prompt Generator",
-        "ctrl_title": "🌐 PUSAT KONTROL",
-        "acc_mode": "Mode Akses:",
-        "btn_price": "ℹ️ Lihat Pilihan Paket",
+        "tab1": "📸 Metadata Stok & Sosmed", "tab2": "🎨 AI Prompt Generator",
+        "ctrl_title": "🌐 PUSAT KONTROL", "acc_mode": "Mode Akses:", "btn_price": "ℹ️ Lihat Pilihan Paket",
         "title_main": "✨ Universal AI Control Center",
         "run_btn": "JALANKAN 🚀",
         "process_txt": "Sedang memproses...",
@@ -186,7 +183,7 @@ if app_lang == "🇮🇩 Indonesia":
         
         # Error Messages (Localized)
         "err_vendor": "⚠️ Model ini belum tersedia (Coming Soon).",
-        "err_model_select": "❌ Model ini belum tersedia.",
+        "err_premium_coming_soon": "⚠️ Maaf, Server Premium untuk model ini sedang dalam maintenance (Coming Soon). Mohon gunakan Groq (Llama 4) atau gunakan API Key sendiri di Mode Free.",
         "err_api_req": "API Key / Token Wajib Diisi!",
         "err_idea_req": "Mohon isi ide konten Anda terlebih dahulu.",
         "err_plan": "Paket '{type}' Anda tidak mencakup '{plat}'. Silakan Upgrade.",
@@ -205,11 +202,7 @@ if app_lang == "🇮🇩 Indonesia":
         "pg_upsell": "💡 <a href='mailto:hadisyh71@gmail.com'>Beli Token PROMPT Only (29rb)</a> untuk hasil lebih stabil.",
         
         # Pricing Labels
-        "p_stock_p": "29rb", 
-        "p_sosmed_p": "29rb", 
-        "p_prompt_p": "29rb", 
-        "p_full_p": "49rb",
-        "p_btn": "Pilih Paket",
+        "p_stock_p": "29rb", "p_sosmed_p": "29rb", "p_prompt_p": "29rb", "p_full_p": "49rb", "p_btn": "Pilih Paket",
         "p_link_full": "mailto:hadisyh71@gmail.com?subject=Beli%20Token%20Full%20(IDR)",
         
         # Pricing Descriptions
@@ -222,11 +215,8 @@ else:
     # English (Default Global)
     t = {
         # General UI
-        "tab1": "📸 Metadata Engine",
-        "tab2": "🎨 AI Prompt Architect",
-        "ctrl_title": "🌐 CONTROL CENTER",
-        "acc_mode": "Access Mode:",
-        "btn_price": "ℹ️ View Pricing",
+        "tab1": "📸 Metadata Engine", "tab2": "🎨 AI Prompt Architect",
+        "ctrl_title": "🌐 CONTROL CENTER", "acc_mode": "Access Mode:", "btn_price": "ℹ️ View Pricing",
         "title_main": "✨ Universal AI Control Center",
         "run_btn": "RUN ENGINE 🚀",
         "process_txt": "Generating metadata...",
@@ -241,7 +231,7 @@ else:
         
         # Error Messages (Localized)
         "err_vendor": "⚠️ This model is Coming Soon.",
-        "err_model_select": "❌ This model is unavailable.",
+        "err_premium_coming_soon": "⚠️ Premium Server for this model is under maintenance (Coming Soon). Please use Groq (Llama 4) or use your own Key in Free Mode.",
         "err_api_req": "API Key / Token Required!",
         "err_idea_req": "Please enter your content idea first.",
         "err_plan": "Your Plan '{type}' does not include '{plat}'. Please Upgrade.",
@@ -260,11 +250,7 @@ else:
         "pg_upsell": "💡 <a href='mailto:hadisyh71@gmail.com'>Buy PROMPT Only Token ($5)</a> for stable results.",
         
         # Pricing Labels
-        "p_stock_p": "$5", 
-        "p_sosmed_p": "$5", 
-        "p_prompt_p": "$5", 
-        "p_full_p": "$9",
-        "p_btn": "Subscribe",
+        "p_stock_p": "$5", "p_sosmed_p": "$5", "p_prompt_p": "$5", "p_full_p": "$9", "p_btn": "Subscribe",
         "p_link_full": "mailto:hadisyh71@gmail.com?subject=Buy%20Full%20Token%20(USD)",
         
         # Pricing Descriptions
@@ -285,55 +271,13 @@ def show_subscription_tiers():
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
-        st.markdown(f"""
-        <div class="tier-wrapper bg-stock">
-            <div>
-                <h3 style="color: #3B82F6; margin: 0;">📦 STOCK</h3>
-                <h1 style="margin: 10px 0;">{t['p_stock_p']}</h1>
-                <div class="desc-text">{t['d_stock']}</div>
-            </div>
-            <a href="{t['p_link_full']}" class="sub-link btn-stock">{t['p_btn']}</a>
-        </div>
-        """, unsafe_allow_html=True)
-        
+        st.markdown(f"""<div class="tier-wrapper bg-stock"><div><h3 style="color: #3B82F6; margin: 0;">📦 STOCK</h3><h1 style="margin: 10px 0;">{t['p_stock_p']}</h1><div class="desc-text">{t['d_stock']}</div></div><a href="{t['p_link_full']}" class="sub-link btn-stock">{t['p_btn']}</a></div>""", unsafe_allow_html=True)
     with c2:
-        st.markdown(f"""
-        <div class="tier-wrapper bg-sosmed">
-            <div>
-                <h3 style="color: #8B5CF6; margin: 0;">📱 SOSMED</h3>
-                <h1 style="margin: 10px 0;">{t['p_sosmed_p']}</h1>
-                <div class="desc-text">{t['d_sosmed']}</div>
-            </div>
-            <a href="{t['p_link_full']}" class="sub-link btn-sosmed">{t['p_btn']}</a>
-        </div>
-        """, unsafe_allow_html=True)
-        
+        st.markdown(f"""<div class="tier-wrapper bg-sosmed"><div><h3 style="color: #8B5CF6; margin: 0;">📱 SOSMED</h3><h1 style="margin: 10px 0;">{t['p_sosmed_p']}</h1><div class="desc-text">{t['d_sosmed']}</div></div><a href="{t['p_link_full']}" class="sub-link btn-sosmed">{t['p_btn']}</a></div>""", unsafe_allow_html=True)
     with c3:
-        st.markdown(f"""
-        <div class="tier-wrapper bg-prompt">
-            <div>
-                <h3 style="color: #10B981; margin: 0;">🎨 PROMPT</h3>
-                <h1 style="margin: 10px 0;">{t['p_prompt_p']}</h1>
-                <div class="desc-text">{t['d_prompt']}</div>
-            </div>
-            <a href="{t['p_link_full']}" class="sub-link btn-prompt">{t['p_btn']}</a>
-        </div>
-        """, unsafe_allow_html=True)
-        
+        st.markdown(f"""<div class="tier-wrapper bg-prompt"><div><h3 style="color: #10B981; margin: 0;">🎨 PROMPT</h3><h1 style="margin: 10px 0;">{t['p_prompt_p']}</h1><div class="desc-text">{t['d_prompt']}</div></div><a href="{t['p_link_full']}" class="sub-link btn-prompt">{t['p_btn']}</a></div>""", unsafe_allow_html=True)
     with c4:
-        st.markdown(f"""
-        <div style="position: relative; height: 100%;">
-            <div class="best-value-tag">BEST VALUE</div>
-            <div class="tier-wrapper bg-full">
-                <div>
-                    <h3 style="color: #F59E0B; margin: 0;">🔥 FULL</h3>
-                    <h1 style="margin: 10px 0;">{t['p_full_p']}</h1>
-                    <div class="desc-text">{t['d_full']}</div>
-                </div>
-                <a href="{t['p_link_full']}" class="sub-link btn-full">{t['p_btn']}</a>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div style="position: relative; height: 100%;"><div class="best-value-tag">BEST VALUE</div><div class="tier-wrapper bg-full"><div><h3 style="color: #F59E0B; margin: 0;">🔥 FULL</h3><h1 style="margin: 10px 0;">{t['p_full_p']}</h1><div class="desc-text">{t['d_full']}</div></div><a href="{t['p_link_full']}" class="sub-link btn-full">{t['p_btn']}</a></div></div>""", unsafe_allow_html=True)
 
 # ==========================================
 # 5. SIDEBAR LOGIC (CONTROL CENTER)
@@ -404,12 +348,16 @@ with st.sidebar:
                 elif user_token.startswith("PRM-"): access_type = "Prompt Only"
                 
                 st.success(f"💎 Premium Active: {access_type}")
-                st.caption(f"✅ Connected to {vendor.split()[0]} (Premium Server)")
                 
-                # OTOMATIS AMBIL API KEY DARI SECRETS (HOST)
-                if "Groq" in vendor: final_key = st.secrets["GROQ_API_KEY"]
-                elif "Google" in vendor: final_key = st.secrets["GEMINI_API_KEY"]
-                elif "OpenAI" in vendor: final_key = st.secrets["OPENAI_API_KEY"]
+                # --- LOGIKA KUNCI PREMIUM ---
+                # Hanya Groq yang aktif di Premium. Lainnya Coming Soon.
+                if "Groq" in vendor:
+                    st.caption(f"✅ Connected to {vendor.split()[0]} (Premium Server)")
+                    final_key = st.secrets["GROQ_API_KEY"]
+                else:
+                    # Tampilkan pesan Coming Soon (Dari Dictionary)
+                    st.warning(t['err_premium_coming_soon'])
+                    final_key = None # Kunci akses agar tidak jalan
                     
             elif user_token:
                 st.error("Invalid Token!")
