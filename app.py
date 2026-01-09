@@ -95,7 +95,7 @@ st.markdown("""
         border-radius: 15px;
         text-align: center;
         justify-content: space-between;
-        min-height: 480px; /* Tinggi agar teks muat */
+        min-height: 480px;
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
@@ -162,10 +162,8 @@ st.markdown("""
 # 3. KAMUS BAHASA (LANGUAGE DICTIONARY)
 # ==========================================
 with st.sidebar:
-    # Language Switcher Paling Atas
     app_lang = st.radio("Language / Bahasa:", ("🇮🇩 Indonesia", "🌎 English (Global)"), horizontal=True)
 
-# Definisikan Teks Berdasarkan Pilihan Bahasa
 if app_lang == "🇮🇩 Indonesia":
     t = {
         # General UI
@@ -185,10 +183,6 @@ if app_lang == "🇮🇩 Indonesia":
         "ad_sidebar_btn": "Hubungi via Email →",
         "ad_header_text": "🚀 <b>MAU FITUR SULTAN?</b><br><span style='font-size:0.8em;'>Upgrade ke Paket FULL hanya 49rb! Akses Metadata + Prompt Generator.</span>",
         "ad_warning": "📢 Akun Free antrean server lebih lama (Low Priority).",
-        
-        # Error Messages (Localized)
-        "err_vendor": "⚠️ Model ini belum tersedia (Coming Soon). Silakan gunakan Groq (Llama 4) dulu.",
-        "err_model_select": "❌ Model ini belum tersedia. Mohon pilih 'Groq (Llama 4)' di Sidebar.",
         
         # Prompt Generator Specific
         "pg_mode": "Pilih Mode:",
@@ -229,10 +223,6 @@ else:
         "ad_sidebar_btn": "Contact for Quote →",
         "ad_header_text": "🚀 <b>UNLOCK PRO FEATURES?</b><br><span style='font-size:0.8em;'>Get FULL Access for only $9/mo! Metadata + Prompt Tools included.</span>",
         "ad_warning": "📢 Free Tier has lower server priority. Upgrade for lightning speed.",
-        
-        # Error Messages (Localized)
-        "err_vendor": "⚠️ This model is Coming Soon. Please use Groq (Llama 4) for now.",
-        "err_model_select": "❌ This model is unavailable. Please select 'Groq (Llama 4)' in Sidebar.",
         
         # Prompt Generator Specific
         "pg_mode": "Select Mode:",
@@ -324,78 +314,75 @@ with st.sidebar:
     # --- ACCESS MODE ---
     access_mode = st.radio(t['acc_mode'], ("Free (Standard)", "Premium (Pro Access)"))
     
-    # Tombol Lihat Harga
     if st.button(t['btn_price']):
         show_subscription_tiers()
     
     st.divider()
     
-    # --- AI ENGINE SELECTION ---
+    # --- AI ENGINE SELECTION (UNLOCKED ALL) ---
     vendor = st.selectbox("AI Engine (Model):", (
-        "Groq (Llama 4 - Recommended)", 
-        "Google (Gemini - Coming Soon)", 
-        "OpenAI (GPT-4o - Coming Soon)"
+        "Groq (Llama 4 - Fast)", 
+        "Google (Gemini - Smart)", 
+        "OpenAI (GPT-4o - Precise)"
     ))
     
     final_key = None
     selected_model = None
     access_type = "Free"
     
-    # --- LOGIKA PENGAMAN VENDOR (LOCK & UNLOCK) ---
-    is_vendor_active = False
-    
+    # --- MENENTUKAN ID MODEL (BACKEND) ---
     if "Groq" in vendor:
-        is_vendor_active = True
-        # ID MODEL SESUAI LOG YANG VALID (LLAMA 4)
         selected_model = "meta-llama/llama-4-scout-17b-16e-instruct"
-    else:
-        # Tampilkan Error Dinamis (Indo/Inggris)
-        st.error(t['err_vendor'])
+    elif "Google" in vendor:
+        selected_model = "gemini-1.5-flash"
+    elif "OpenAI" in vendor:
+        selected_model = "gpt-4o"
     
-    # --- INPUT CREDENTIALS ---
-    if is_vendor_active:
-        if access_mode == "Free (Standard)":
-            final_key = st.text_input(f"Enter Groq API Key:", type="password")
+    # --- INPUT CREDENTIALS LOGIC ---
+    if access_mode == "Free (Standard)":
+        # LOGIKA BYOK (BRING YOUR OWN KEY)
+        if "Groq" in vendor:
+            final_key = st.text_input("Enter Groq API Key:", type="password", help="Dapatkan di console.groq.com")
+        elif "Google" in vendor:
+            final_key = st.text_input("Enter Gemini API Key:", type="password", help="Dapatkan di aistudio.google.com")
+        elif "OpenAI" in vendor:
+            final_key = st.text_input("Enter OpenAI API Key:", type="password", help="Perlu saldo OpenAI")
             
-            # IKLAN SIDEBAR (Hanya di Free Mode)
-            st.divider()
-            st.markdown(f"""
-            <div class="ad-box">
-                <div class="ad-title">{t['ad_sidebar_title']}</div>
-                {t['ad_sidebar_text']}<br>
-                <a href="mailto:hadisyh71@gmail.com" style="color:#F59E0B; font-weight:bold; text-decoration:none;">{t['ad_sidebar_btn']}</a>
-            </div>
-            """, unsafe_allow_html=True)
+        # IKLAN SIDEBAR (Hanya di Free Mode)
+        st.divider()
+        st.markdown(f"""
+        <div class="ad-box">
+            <div class="ad-title">{t['ad_sidebar_title']}</div>
+            {t['ad_sidebar_text']}<br>
+            <a href="mailto:hadisyh71@gmail.com" style="color:#F59E0B; font-weight:bold; text-decoration:none;">{t['ad_sidebar_btn']}</a>
+        </div>
+        """, unsafe_allow_html=True)
             
-        else:
-            # PREMIUM MODE
-            user_token = st.text_input("Member Token:", type="password")
-            
-            # Cek Token di Secrets
-            try:
-                valid_tokens = st.secrets["VALID_TOKENS"].split(",") 
-                if user_token in valid_tokens and user_token != "":
-                    # Klasifikasi Tipe Token
-                    if user_token.startswith("FULL-"):
-                        access_type = "Full Access"
-                    elif user_token.startswith("STK-"):
-                        access_type = "Stock Only"
-                    elif user_token.startswith("SOC-"):
-                        access_type = "Sosmed Only"
-                    elif user_token.startswith("PRM-"):
-                        access_type = "Prompt Only"
+    else:
+        # PREMIUM MODE (User Masukin Token, Kita Supply API Key)
+        user_token = st.text_input("Member Token:", type="password")
+        
+        try:
+            valid_tokens = st.secrets["VALID_TOKENS"].split(",") 
+            if user_token in valid_tokens and user_token != "":
+                # Klasifikasi Tipe Token
+                if user_token.startswith("FULL-"): access_type = "Full Access"
+                elif user_token.startswith("STK-"): access_type = "Stock Only"
+                elif user_token.startswith("SOC-"): access_type = "Sosmed Only"
+                elif user_token.startswith("PRM-"): access_type = "Prompt Only"
+                
+                st.success(f"💎 Premium Active: {access_type}")
+                st.caption(f"✅ Connected to {vendor.split()[0]} (Premium Server)")
+                
+                # OTOMATIS AMBIL API KEY DARI SECRETS (HOST)
+                if "Groq" in vendor: final_key = st.secrets["GROQ_API_KEY"]
+                elif "Google" in vendor: final_key = st.secrets["GEMINI_API_KEY"]
+                elif "OpenAI" in vendor: final_key = st.secrets["OPENAI_API_KEY"]
                     
-                    st.success(f"💎 Premium Active: {access_type}")
-                    st.caption("✅ Connected to Llama 4 (Premium Server)")
-                    
-                    # Otomatis Ambil API Key Master
-                    if "Groq" in vendor:
-                        final_key = st.secrets["GROQ_API_KEY"]
-                        
-                elif user_token:
-                    st.error("Invalid Token!")
-            except:
-                pass
+            elif user_token:
+                st.error("Invalid Token!")
+        except:
+            pass
 
 # ==========================================
 # 6. FUNGSI EKSEKUTOR AI (ENGINE)
@@ -409,8 +396,21 @@ def run_ai(api_key, provider, model, prompt):
                 messages=[{"role": "user", "content": prompt}]
             )
             return resp.choices[0].message.content
-        # Placeholder untuk Google & OpenAI (Coming Soon)
-        return "Provider not available yet."
+            
+        elif "Google" in provider:
+            genai.configure(api_key=api_key)
+            m = genai.GenerativeModel(model)
+            resp = m.generate_content(prompt)
+            return resp.text
+            
+        elif "OpenAI" in provider:
+            client = OpenAI(api_key=api_key)
+            resp = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return resp.choices[0].message.content
+            
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -430,7 +430,6 @@ tab1, tab2 = st.tabs([t['tab1'], t['tab2']])
 # TAB 1: METADATA ENGINE (STOCK & SOSMED)
 # ==========================================
 with tab1:
-    # Baris Kontrol Platform & Bahasa
     col_plat, col_lang = st.columns([2,1])
     
     with col_plat:
@@ -447,7 +446,7 @@ with tab1:
             "French", "German", "Japanese"
         ))
     
-    # Opsi Tambahan (Tone/Niche) jika bukan Stok Foto
+    # Opsi Tambahan
     tone, specific_niche, custom_info = "", "", ""
     if platform not in ["Adobe Stock", "Shutterstock"]:
         col_t1, col_t2 = st.columns(2)
@@ -457,92 +456,75 @@ with tab1:
             specific_niche = st.selectbox("Niche:", ("Travel", "Food", "Fashion", "Tech", "Health", "Lifestyle", "Product"))
         custom_info = st.text_input("Extra Info (Optional):")
 
-    # Upload Area
     uploaded_files = st.file_uploader("Upload Assets (Max 10)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'], key="meta_up")
     
-    # Warning Antrean (Free User)
     if access_mode == "Free (Standard)" and uploaded_files:
         st.warning(t['ad_warning'])
 
     # TOMBOL EKSEKUSI (RUN)
     if st.button(t['run_btn'], key="btn_meta"):
         
-        # Validasi: Apakah Model Aktif?
-        if not is_vendor_active:
-            st.error(t['err_model_select'])
-        else:
-            # Validasi: Apakah User Punya Izin Akses?
-            is_allowed = True
-            if access_type == "Prompt Only":
-                is_allowed = False # Paket Prompt gaboleh pakai Metadata
-            elif access_type == "Sosmed Only" and platform in ["Adobe Stock", "Shutterstock"]:
-                is_allowed = False
-            elif access_type == "Stock Only" and platform not in ["Adobe Stock", "Shutterstock"]:
-                is_allowed = False
+        # Validasi Izin
+        is_allowed = True
+        if access_type == "Prompt Only": is_allowed = False
+        elif access_type == "Sosmed Only" and platform in ["Adobe Stock", "Shutterstock"]: is_allowed = False
+        elif access_type == "Stock Only" and platform not in ["Adobe Stock", "Shutterstock"]: is_allowed = False
+        
+        if not final_key:
+            st.error("API Key / Token Required!")
+        elif not is_allowed:
+            st.error(f"Your Plan '{access_type}' does not include '{platform}'. Please Upgrade.")
+        elif uploaded_files:
             
-            # Cek API Key & Izin
-            if not final_key:
-                st.error("API Key / Token Required!")
-            elif not is_allowed:
-                st.error(f"Your Plan '{access_type}' does not include '{platform}'. Please Upgrade.")
-            elif uploaded_files:
+            progress = st.progress(0)
+            total = len(uploaded_files)
+            
+            for i, file in enumerate(uploaded_files):
+                progress.progress((i)/total)
                 
-                # Mulai Proses Batch
-                progress = st.progress(0)
-                total = len(uploaded_files)
+                with st.expander(f"Processing: {file.name}", expanded=True):
+                    col1, col2 = st.columns([1,3])
+                    with col1:
+                        st.image(file, use_container_width=True)
+                    with col2:
+                        st.write(t['process_txt'])
+                        
+                        prompt = ""
+                        if platform in ["Adobe Stock", "Shutterstock"]:
+                            prompt = f"Analyze image '{file.name}'. Output strictly: Title, Description, 50 Keywords. Target: {platform}. English only."
+                        elif platform == "X (Twitter) Thread":
+                            prompt = f"Create viral THREAD for '{file.name}'. Tone: {tone}, Niche: {specific_niche}, Lang: {out_lang}. 4 Tweets (Hook, Value, Tip, CTA)."
+                        else:
+                            prompt = f"Target: {platform} | Tone: {tone} | Niche: {specific_niche} | Lang: {out_lang}. Extra: {custom_info}. Create viral content for '{file.name}'."
+                        
+                        res = run_ai(final_key, vendor, selected_model, prompt)
+                        st.text_area("Result:", value=res, height=250)
                 
-                for i, file in enumerate(uploaded_files):
-                    progress.progress((i)/total)
-                    
-                    with st.expander(f"Processing: {file.name}", expanded=True):
-                        col1, col2 = st.columns([1,3])
-                        with col1:
-                            st.image(file, use_container_width=True)
-                        with col2:
-                            st.write(t['process_txt'])
-                            
-                            # --- LOGIKA PROMPT METADATA ---
-                            prompt = ""
-                            if platform in ["Adobe Stock", "Shutterstock"]:
-                                prompt = f"Analyze image '{file.name}'. Output strictly: Title, Description, 50 Keywords. Target: {platform}. English only."
-                            elif platform == "X (Twitter) Thread":
-                                prompt = f"Create viral THREAD for '{file.name}'. Tone: {tone}, Niche: {specific_niche}, Lang: {out_lang}. 4 Tweets (Hook, Value, Tip, CTA)."
-                            else:
-                                prompt = f"Target: {platform} | Tone: {tone} | Niche: {specific_niche} | Lang: {out_lang}. Extra: {custom_info}. Create viral content for '{file.name}'."
-                            
-                            # Kirim ke AI
-                            res = run_ai(final_key, vendor, selected_model, prompt)
-                            st.text_area("Result:", value=res, height=250)
-                    
-                    # Delay Buatan untuk Free User (Biar kerasa bedanya)
-                    if access_mode == "Free (Standard)":
-                        time.sleep(2)
-                
-                progress.progress(1.0)
-                st.success(t['success_txt'])
+                if access_mode == "Free (Standard)":
+                    time.sleep(2)
+            
+            progress.progress(1.0)
+            st.success(t['success_txt'])
 
 # ==========================================
 # TAB 2: PROMPT ARCHITECT (GENERATOR)
 # ==========================================
 with tab2:
-    # Cek Status Premium untuk Fitur Tambahan
+    # Cek Status Premium
     is_prompt_premium = False
     if access_type == "Full Access" or access_type == "Prompt Only":
         is_prompt_premium = True
     else:
-        st.info("🔓 **Free Mode:** Upgrade ke **PROMPT/FULL Access** untuk fitur 'Auto-Enhance' & 'Llama 4 Optimized'.")
+        st.info("🔓 **Free Mode:** Upgrade ke **PROMPT/FULL Access** untuk fitur 'Auto-Enhance' & 'Award Winning Style'.")
 
-    # Baris Kontrol Mode & Target AI
     col_mode1, col_mode2 = st.columns(2)
     with col_mode1:
         p_mode = st.selectbox(t['pg_mode'], ("🖼️ Text to Image", "🔄 Image to Image", "🎬 Text to Video", "📸➡️🎬 Image to Video"))
     with col_mode2:
         p_target = st.selectbox(t['pg_target'], ("Midjourney v6", "Dall-E 3", "Leonardo AI", "Stable Diffusion XL", "Runway Gen-2", "Kling AI"))
 
-    # Area Input Ide
     p_idea = st.text_area(t['pg_idea'], placeholder="Example: Kucing naik motor di kota tua Jakarta...")
     
-    # Baris Kontrol Style & Rasio
     col_opt1, col_opt2 = st.columns(2)
     with col_opt1:
         p_style = st.selectbox(t['pg_style'], ("Cinematic Photography", "3D Pixar/Disney", "Anime Studio Ghibli", "Cyberpunk/Neon", "Dark Fantasy", "Corporate Vector", "Sketch/Drawing"))
@@ -552,17 +534,13 @@ with tab2:
     # TOMBOL GENERATE PROMPT
     if st.button(t['pg_btn'], key="btn_prompt"):
         
-        # Validasi
-        if not is_vendor_active:
-            st.error(t['err_model_select'])
-        elif not final_key:
+        if not final_key:
             st.error("API Key / Token Required!")
         elif not p_idea:
             st.warning("Please enter your idea first.")
         else:
             with st.spinner("Meracik Mantra Ajaib..."):
                 
-                # --- RUMUS PROMPT ENGINEERING ---
                 sys_prompt = f"""
                 Act as a Professional Prompt Engineer for {p_target}.
                 Mode: {p_mode}.
@@ -580,13 +558,10 @@ with tab2:
                 if is_prompt_premium:
                     sys_prompt += " Add 'Award winning, 8k, masterpiece' keywords. Also generate a Negative Prompt block."
                 
-                # Eksekusi AI
                 final_prompt = run_ai(final_key, vendor, selected_model, sys_prompt)
                 
-                # Tampilkan Hasil
                 st.subheader("✨ Hasil Mantra (Copy This):")
                 st.code(final_prompt, language="markdown")
                 
-                # Pesan Upsell jika Free
                 if not is_prompt_premium:
                     st.markdown(f"<small style='color:#F59E0B;'>💡 <a href='{t['p_link_full']}'>Beli Token PROMPT Only (29rb)</a> untuk hasil lebih stabil.</small>", unsafe_allow_html=True)
