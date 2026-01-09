@@ -159,7 +159,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. KAMUS BAHASA (LANGUAGE DICTIONARY) - EXPANDED
+# 3. KAMUS BAHASA (LANGUAGE DICTIONARY)
 # ==========================================
 with st.sidebar:
     app_lang = st.radio("Language / Bahasa:", ("🇮🇩 Indonesia", "🌎 English (Global)"), horizontal=True)
@@ -184,7 +184,7 @@ if app_lang == "🇮🇩 Indonesia":
         "ad_header_text": "🚀 <b>MAU FITUR SULTAN?</b><br><span style='font-size:0.8em;'>Upgrade ke Paket FULL hanya 49rb! Akses Metadata + Prompt Generator.</span>",
         "ad_warning": "📢 Akun Free antrean server lebih lama (Low Priority).",
         
-        # Error Messages (Localized)
+        # Error Messages
         "err_vendor": "⚠️ Model ini belum tersedia (Coming Soon).",
         "err_model_select": "❌ Model ini belum tersedia.",
         "err_api_req": "API Key / Token Wajib Diisi!",
@@ -215,7 +215,7 @@ if app_lang == "🇮🇩 Indonesia":
         # Pricing Descriptions
         "d_stock": "✅ <b>Optimasi Adobe Stock</b><br>✅ Generator 50 Keyword<br>✅ Auto Title & Deskripsi<br>✅ Format CSV Ready<br>🚫 Tanpa Iklan",
         "d_sosmed": "✅ <b>Viral Hook Generator</b><br>✅ Thread Twitter Otomatis<br>✅ Caption IG/TikTok<br>✅ Multi-Bahasa<br>🚫 Tanpa Iklan",
-        "d_prompt": "✅ <b>Midjourney & Video AI</b><br>✅ Auto Negative Prompt<br>✅ Style Preset (Cinematic)<br>✅ Parameter Teknis<br>🚫 Tanpa Iklan",
+        "d_prompt": "✅ <b>Nano Banana & Veo</b><br>✅ Auto Negative Prompt<br>✅ Style Preset (Cinematic)<br>✅ Parameter Teknis<br>🚫 Tanpa Iklan",
         "d_full": "🔥 <b>SEMUA FITUR (3 in 1)</b><br>✅ Akses Stok + Sosmed + Prompt<br>⚡ <b>Prioritas Server (Cepat)</b><br>✅ Support 24/7<br>✅ Early Access Fitur Baru"
     }
 else:
@@ -239,7 +239,7 @@ else:
         "ad_header_text": "🚀 <b>UNLOCK PRO FEATURES?</b><br><span style='font-size:0.8em;'>Get FULL Access for only $9/mo! Metadata + Prompt Tools included.</span>",
         "ad_warning": "📢 Free Tier has lower server priority. Upgrade for lightning speed.",
         
-        # Error Messages (Localized)
+        # Error Messages
         "err_vendor": "⚠️ This model is Coming Soon.",
         "err_model_select": "❌ This model is unavailable.",
         "err_api_req": "API Key / Token Required!",
@@ -270,7 +270,7 @@ else:
         # Pricing Descriptions
         "d_stock": "✅ <b>Adobe Stock Optimized</b><br>✅ 50 Keywords Generator<br>✅ SEO Title & Desc<br>✅ Clean Format<br>🚫 No Ads Experience",
         "d_sosmed": "✅ <b>Viral Scripts & Hooks</b><br>✅ Twitter Thread Maker<br>✅ IG/TikTok Captions<br>✅ Multi-Language Output<br>🚫 No Ads Experience",
-        "d_prompt": "✅ <b>Pro AI Prompts</b><br>✅ Auto Negative Prompt<br>✅ Video AI Camera Moves<br>✅ Midjourney Parameters<br>🚫 No Ads Experience",
+        "d_prompt": "✅ <b>Nano Banana & Veo</b><br>✅ Auto Negative Prompt<br>✅ Video AI Camera Moves<br>✅ Midjourney Parameters<br>🚫 No Ads Experience",
         "d_full": "🔥 <b>ALL FEATURES (3 in 1)</b><br>✅ Stock + Sosmed + Prompt<br>⚡ <b>Priority Server (Fast)</b><br>✅ 24/7 Support<br>✅ Unlimited Usage"
     }
 
@@ -553,7 +553,13 @@ with tab2:
     with col_mode1:
         p_mode = st.selectbox(t['pg_mode'], ("🖼️ Text to Image", "🔄 Image to Image", "🎬 Text to Video", "📸➡️🎬 Image to Video"))
     with col_mode2:
-        p_target = st.selectbox(t['pg_target'], ("Midjourney v6", "Dall-E 3", "Leonardo AI", "Stable Diffusion XL", "Runway Gen-2", "Kling AI"))
+        # UPDATE: NANO BANANA & GOOGLE VEO ADDED
+        p_target = st.selectbox(t['pg_target'], (
+            "Midjourney v6", "Dall-E 3", 
+            "Leonardo AI", "Nano Banana (Gemini Image)", 
+            "Google Veo (Video)", "Stable Diffusion XL", 
+            "Runway Gen-2", "Kling AI"
+        ))
 
     p_idea = st.text_area(t['pg_idea'], placeholder=t['pg_placeholder'])
     
@@ -573,7 +579,7 @@ with tab2:
         else:
             with st.spinner("Meracik Mantra Ajaib..."):
                 
-                # --- UPDATE LOGIC V10: SINGLE BLOCK OUTPUT (ANTI-PANJANG) ---
+                # --- UPDATE LOGIC V11: NANO BANANA & VEO LOGIC ADDED ---
                 sys_prompt = f"""
                 Act as a Professional Prompt Engineer for {p_target}.
                 Mode: {p_mode}.
@@ -583,8 +589,14 @@ with tab2:
                 
                 Task: Write a SINGLE, continuous paragraph containing all visual details (Subject, Action, Camera, Lighting, Style).
                 DO NOT use bullet points or multiple headers.
-                Output ONLY the raw prompt text string.
                 """
+                
+                if "Nano Banana" in p_target:
+                    sys_prompt += " Focus on natural language descriptions, clear text rendering, and character consistency."
+                if "Veo" in p_target:
+                    sys_prompt += " Focus on cinematic lighting, physics accuracy, and fluid motion."
+                
+                sys_prompt += " Output ONLY the raw prompt text string."
                 
                 if is_prompt_premium:
                     sys_prompt += " Add 'Award winning, 8k, masterpiece' keywords at the end. If Negative Prompt is needed, add it as a separate block at the very bottom labelled 'Negative Prompt:'."
