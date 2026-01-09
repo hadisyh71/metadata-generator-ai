@@ -7,14 +7,12 @@ import time
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="Universal AI Metadata Pro", page_icon="✨", layout="wide")
 
-# 2. CSS FINAL: UI MEWAH, STYLE TOMBOL, & DESAIN IKLAN
+# 2. CSS FINAL: UI MEWAH & HEADER AMAN (TIDAK DISEMBUNYIKAN)
 st.markdown("""
     <style>
-    /* --- HIDE STREAMLIT DEFAULT ELEMENTS (CLEAN LOOK) --- */
+    /* --- HANYA SEMBUNYIKAN MENU TITIK TIGA & FOOTER (HEADER TETAP ADA) --- */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    [data-testid="stToolbar"] {visibility: hidden; display: none;} /* Sembunyikan Menu Profil Kanan */
-    [data-testid="stHeader"] {background: transparent;} /* Header Transparan */
     
     /* --- THEME COLORS --- */
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
@@ -106,10 +104,11 @@ with st.sidebar:
         elif "Google" in vendor: selected_model = "gemini-1.5-flash"
         elif "OpenAI" in vendor: selected_model = "gpt-4o-mini"
         
-        # --- IKLAN 1: SIDEBAR (KHUSUS FREE USER) ---
+        # --- IKLAN 1: SIDEBAR (CONTOH GAMBAR) ---
         st.divider()
+        # GANTI LINK DI BAWAH SESUAI KEBUTUHAN ANDA
         st.markdown("""<div class="ad-box"><div class="ad-title">📢 SPONSORED</div>
-        <b>Jasa Foto Produk Pro</b><br><small style="color:#D1D5DB;">Bikin foto produkmu auto-laris dan estetik. Diskon khusus pengguna aplikasi ini!</small><br>
+        <b>Jasa Foto Produk Pro</b><br><small style="color:#D1D5DB;">Bikin foto produkmu auto-laris. Diskon khusus pengguna aplikasi ini!</small><br>
         <a href="#" style="color:#F59E0B; font-weight:bold; text-decoration:none;">Hubungi @HadiCreative →</a></div>""", unsafe_allow_html=True)
 
     else:
@@ -155,7 +154,7 @@ with st.sidebar:
         specific_niche = st.selectbox("Content Niche:", ("Traveling", "Food & Beverage", "Fashion & Beauty", "Business & Tech", "Health & Wellness", "Lifestyle & Vlog", "Product Promotion", "Educational"))
         custom_info = st.text_input("Extra Context (Optional):")
 
-# 5. LOGIKA ENGINE AI (FULL FUNCTION)
+# 5. LOGIKA ENGINE AI
 def run_ai_engine(api_key, provider, model_name, prompt):
     try:
         if "Groq" in provider:
