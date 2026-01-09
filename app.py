@@ -7,17 +7,17 @@ import time
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(page_title="Universal AI Metadata Pro", page_icon="✨", layout="wide")
 
-# 2. CSS FINAL: UI MEWAH & HEADER AMAN (TIDAK DISEMBUNYIKAN)
+# 2. CSS FINAL: UI MEWAH, IKLAN RAPI, & TOMBOL SIDEBAR AMAN
 st.markdown("""
     <style>
-    /* --- HANYA SEMBUNYIKAN MENU TITIK TIGA & FOOTER (HEADER TETAP ADA) --- */
+    /* HIDE MENU BAWAAN TAPI HEADER TETAP ADA (AGAR TOMBOL SIDEBAR MUNCUL) */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* --- THEME COLORS --- */
+    /* THEME COLORS */
     .stApp { background-color: #0B0F19; color: #F3F4F6; }
     
-    /* --- BUTTON STYLING --- */
+    /* BUTTON STYLING */
     .stButton>button {
         background: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
         color: white; border-radius: 12px; border: none; font-weight: 600; width: 100%;
@@ -26,16 +26,18 @@ st.markdown("""
     }
     .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
     
-    /* --- STYLE KHUSUS IKLAN (AD BOX) --- */
+    /* STYLE KHUSUS KOTAK IKLAN */
     .ad-box {
         background: rgba(255, 255, 255, 0.05);
-        border-left: 5px solid #F59E0B; /* Garis Orange Iklan */
+        border-left: 5px solid #F59E0B; /* Garis Orange */
         padding: 15px;
         border-radius: 10px;
         margin: 15px 0;
         font-size: 0.9em;
     }
     .ad-title { color: #F59E0B; font-weight: bold; font-size: 0.8em; margin-bottom: 5px; letter-spacing: 1px; }
+    
+    /* HEADER BANNER IKLAN */
     .ad-header-banner {
         background: linear-gradient(90deg, #F59E0B 0%, #D97706 100%);
         padding: 15px; border-radius: 12px; text-align: center; 
@@ -43,14 +45,13 @@ st.markdown("""
         box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
     }
     
-    /* --- TIER CARD STYLING --- */
+    /* TIER CARD STYLING */
     .tier-wrapper {
         display: flex; flex-direction: column; height: 100%;
         background: rgba(255,255,255,0.03); padding: 25px; 
         border-radius: 20px; text-align: center; justify-content: space-between;
         min-height: 380px;
     }
-    
     .sub-link {
         display: block; width: 100%; padding: 12px; margin-top: auto;
         text-decoration: none !important; color: white !important;
@@ -59,7 +60,7 @@ st.markdown("""
     }
     .sub-link:hover { opacity: 0.8; transform: scale(1.02); }
     
-    /* --- TIER COLORS --- */
+    /* TIER COLORS */
     .bg-stock { border: 1px solid #3B82F6; } .btn-stock { background: #3B82F6; }
     .bg-sosmed { border: 1px solid #8B5CF6; } .btn-sosmed { background: #8B5CF6; }
     .bg-full { border: 2px solid #F59E0B; background: rgba(245, 158, 11, 0.05); } 
@@ -73,7 +74,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 3. FUNGSI POP-UP PENJELASAN TIER
+# 3. FUNGSI POP-UP TIER
 @st.dialog("💎 Pilih Paket Premium Anda")
 def show_subscription_tiers():
     st.markdown("<p style='text-align: center; color: #9CA3AF; margin-bottom: 30px;'>Hilangkan Iklan & Akses Server Prioritas.</p>", unsafe_allow_html=True)
@@ -88,7 +89,7 @@ def show_subscription_tiers():
     with col3:
         st.markdown(f"""<div style="position: relative; height: 100%;"><div class="best-value-tag">BEST VALUE</div><div class="tier-wrapper bg-full"><div><h3 style="color: #F59E0B; margin: 0;">🔥 FULL</h3><h1 style="margin: 15px 0;">49<span style="font-size: 0.5em;">rb</span></h1><div style="text-align: left; font-size: 0.85em; color: #D1D5DB; line-height: 1.8;">✅ Akses Semua Fitur<br>✅ No-Ads Forever<br>✅ Unlimited Models<br>✅ Support 24/7</div></div><a href="mailto:hadisyh71@gmail.com?subject=Beli%20Token%20AI%20Full" class="sub-link btn-full">Subscribe Full Access</a></div></div>""", unsafe_allow_html=True)
 
-# 4. SIDEBAR & KONTROL (TERMASUK IKLAN SIDEBAR)
+# 4. SIDEBAR & KONTROL
 with st.sidebar:
     st.header("🌐 AI CONTROL CENTER")
     access_mode = st.radio("Access Mode:", ("Free (Standard)", "Premium (Pro Access)"))
@@ -104,12 +105,11 @@ with st.sidebar:
         elif "Google" in vendor: selected_model = "gemini-1.5-flash"
         elif "OpenAI" in vendor: selected_model = "gpt-4o-mini"
         
-        # --- IKLAN 1: SIDEBAR (CONTOH GAMBAR) ---
+        # --- IKLAN 1: SIDEBAR (FIXED EMAIL LINK) ---
         st.divider()
-        # GANTI LINK DI BAWAH SESUAI KEBUTUHAN ANDA
         st.markdown("""<div class="ad-box"><div class="ad-title">📢 SPONSORED</div>
         <b>Jasa Foto Produk Pro</b><br><small style="color:#D1D5DB;">Bikin foto produkmu auto-laris. Diskon khusus pengguna aplikasi ini!</small><br>
-        <a href="#" style="color:#F59E0B; font-weight:bold; text-decoration:none;">Hubungi @HadiCreative →</a></div>""", unsafe_allow_html=True)
+        <a href="mailto:hadisyh71@gmail.com?subject=Tanya%20Jasa%20Foto%20Produk" style="color:#F59E0B; font-weight:bold; text-decoration:none;">Hubungi via Email →</a></div>""", unsafe_allow_html=True)
 
     else:
         user_token = st.text_input("Enter Member Token:", type="password")
@@ -120,7 +120,7 @@ with st.sidebar:
                 elif user_token.startswith("SOC-"): access_type = "Sosmed Only"
                 elif user_token.startswith("FULL-"): access_type = "Full Access"
                 st.success(f"💎 Premium Active: {access_type}")
-                # Mengambil API Key Rahasia dari Secrets
+                # Kunci Rahasia dari Secrets
                 if "Groq" in vendor: final_key = st.secrets["GROQ_API_KEY"]; selected_model = "meta-llama/llama-4-scout-17b-16e-instruct"
                 elif "Google" in vendor: final_key = st.secrets["GEMINI_API_KEY"]; selected_model = "gemini-1.5-flash"
                 elif "OpenAI" in vendor: final_key = st.secrets["OPENAI_API_KEY"]; selected_model = "gpt-4o"
@@ -129,7 +129,7 @@ with st.sidebar:
 
     st.divider()
     
-    # --- PILIHAN PLATFORM LENGKAP ---
+    # --- PILIHAN PLATFORM ---
     platform = st.selectbox("Target Platform:", 
         (
             "Adobe Stock", 
@@ -166,10 +166,10 @@ def run_ai_engine(api_key, provider, model_name, prompt):
     except Exception as e:
         return f"AI Error: {str(e)}"
 
-# 6. MAIN AREA (TAMPILAN UTAMA & IKLAN HEADER)
+# 6. MAIN AREA
 st.title("✨ Universal AI Metadata Engine")
 
-# --- IKLAN 2: HEADER BANNER (HANYA MUNCUL JIKA FREE) ---
+# --- IKLAN 2: HEADER BANNER (FREE ONLY) ---
 if access_mode == "Free (Standard)" and access_type == "Free":
     st.markdown("""<div class="ad-header-banner">
     🚀 MAU BEBAS IKLAN & SERVER CEPAT? <br>
@@ -184,7 +184,7 @@ if access_mode == "Free (Standard)" and uploaded_files:
 
 if st.button("RUN AI GENERATOR 🚀"):
     is_allowed = False
-    # Logika Cek Akses Tier
+    # Cek Tier Akses
     if access_mode == "Free (Standard)" or access_type == "Full Access": is_allowed = True
     elif access_type == "Stock Only" and platform in ["Adobe Stock", "Shutterstock"]: is_allowed = True
     elif access_type == "Sosmed Only" and platform not in ["Adobe Stock", "Shutterstock"]: is_allowed = True
@@ -206,14 +206,14 @@ if st.button("RUN AI GENERATOR 🚀"):
                 col1, col2 = st.columns([1, 2])
                 with col1: st.image(file, use_container_width=True)
                 with col2:
-                    # --- IKLAN 4: IN-RESULT AD (DI DALAM KOTAK HASIL) ---
+                    # --- IKLAN 4: IN-RESULT AD (DI DALAM HASIL) ---
                     if access_mode == "Free (Standard)":
                         st.markdown("""<div style="font-size: 0.75em; color: #9CA3AF; margin-bottom: 8px; border-bottom: 1px solid #374151; padding-bottom: 5px;">
                         💡 <b>AD:</b> Mau hasil jernih? Beli Preset Lightroom Premium di @HadiCreative</div>""", unsafe_allow_html=True)
 
                     st.write(f"⏳ Generating metadata...")
                     
-                    # --- PROMPT LOGIC LENGKAP ---
+                    # --- PROMPT LOGIC ---
                     if platform in ["Adobe Stock", "Shutterstock"]:
                         prompt = f"""
                         Analyze this image for Stock Photography Metadata.
@@ -245,14 +245,14 @@ if st.button("RUN AI GENERATOR 🚀"):
                     result = run_ai_engine(final_key, vendor, selected_model, prompt)
                     st.text_area("Result:", value=result, height=350, key=f"t_{file.name}")
             
-            # --- IKLAN 5: GAP AD (DI ANTARA FILE) ---
+            # --- IKLAN 5: GAP AD (ANTAR FILE) ---
             if idx < total - 1:
                 if access_mode == "Free (Standard)":
                      st.markdown("""<div style="text-align: center; border: 1px dashed #4B5563; padding: 10px; margin: 15px 0; border-radius: 8px; font-size: 0.8em; color: #D1D5DB;">
                      ✨ <b>PRO TIPS:</b> Lelah copy-paste satu-satu? Paket <b>FULL ACCESS</b> support export ke Excel otomatis!</div>""", unsafe_allow_html=True)
                 
                 with st.spinner(f"Processing next item... (Free Tier Delay)"):
-                    time.sleep(3) # Delay server tetap ada
+                    time.sleep(3)
         
         progress_bar.progress(1.0)
         st.success("✅ Batch Processing Complete!")
