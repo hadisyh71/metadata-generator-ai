@@ -5,7 +5,7 @@ from openai import OpenAI
 import time
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN UTAMA
+# 1. KONFIGURASI HALAMAN & STATE
 # ==========================================
 st.set_page_config(
     page_title="Universal AI Control Center",
@@ -14,8 +14,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Inisialisasi Counter Usage untuk Free User (Pengaman Server)
+if 'usage_count' not in st.session_state:
+    st.session_state.usage_count = 0
+
 # ==========================================
-# 2. CSS & STYLING (TAMPILAN MEWAH)
+# 2. CSS & STYLING (TAMPILAN MEWAH FULL)
 # ==========================================
 st.markdown("""
     <style>
@@ -159,7 +163,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # ==========================================
-# 3. KAMUS BAHASA (LANGUAGE DICTIONARY)
+# 3. KAMUS BAHASA (LANGUAGE DICTIONARY) - LENGKAP V11
 # ==========================================
 with st.sidebar:
     app_lang = st.radio("Language / Bahasa:", ("🇮🇩 Indonesia", "🌎 English (Global)"), horizontal=True)
@@ -184,6 +188,13 @@ if app_lang == "🇮🇩 Indonesia":
         "ad_header_text": "🚀 <b>MAU FITUR SULTAN?</b><br><span style='font-size:0.8em;'>Upgrade ke Paket FULL hanya 49rb! Akses Metadata + Prompt Generator.</span>",
         "ad_warning": "📢 Akun Free antrean server lebih lama (Low Priority).",
         
+        # Limit Messages (New V12)
+        "limit_reached": "⛔ **Batas Harian Habis!**<br>Server sedang padat. User Gratis dibatasi 3x generate per sesi.<br>Silakan **Refresh Halaman** atau **Upgrade Premium** untuk akses unlimited.",
+        "file_limit": "⚠️ **User Gratis Max 1 File!**<br>Upgrade ke Premium untuk upload 10 file sekaligus.",
+        "server_busy": "🔥 **Server High Traffic!** Prioritas diberikan ke User Premium. Mohon antre...",
+        "quota_info": "📊 Sisa Kuota Gratis:",
+        "quota_habis": "⛔ Kuota Habis. Upgrade Sekarang!",
+
         # Error Messages
         "err_vendor": "⚠️ Model ini belum tersedia (Coming Soon).",
         "err_model_select": "❌ Model ini belum tersedia.",
@@ -239,6 +250,13 @@ else:
         "ad_header_text": "🚀 <b>UNLOCK PRO FEATURES?</b><br><span style='font-size:0.8em;'>Get FULL Access for only $9/mo! Metadata + Prompt Tools included.</span>",
         "ad_warning": "📢 Free Tier has lower server priority. Upgrade for lightning speed.",
         
+        # Limit Messages (New V12)
+        "limit_reached": "⛔ **Daily Limit Reached!**<br>Server is busy. Free users are limited to 3 generations per session.<br>**Refresh Page** or **Upgrade to Premium**.",
+        "file_limit": "⚠️ **Free User Limit: 1 File!**<br>Upgrade to Premium to batch upload 10 files.",
+        "server_busy": "🔥 **Server High Traffic!** Priority given to Premium Users. Please queue...",
+        "quota_info": "📊 Free Quota Left:",
+        "quota_habis": "⛔ Quota Exceeded. Upgrade Now!",
+
         # Error Messages
         "err_vendor": "⚠️ This model is Coming Soon.",
         "err_model_select": "❌ This model is unavailable.",
@@ -344,6 +362,14 @@ with st.sidebar:
     # --- ACCESS MODE ---
     access_mode = st.radio(t['acc_mode'], ("Free (Standard)", "Premium (Pro Access)"))
     
+    # TAMPILKAN LIMIT COUNTER JIKA FREE (PROTEKSI SERVER)
+    if access_mode == "Free (Standard)":
+        sisa = 3 - st.session_state.usage_count
+        if sisa < 0: sisa = 0
+        st.info(f"{t['quota_info']} **{sisa} / 3**")
+        if st.session_state.usage_count >= 3:
+            st.error(t['quota_habis'])
+            
     if st.button(t['btn_price']):
         show_subscription_tiers()
     
@@ -496,6 +522,16 @@ with tab1:
     # TOMBOL EKSEKUSI (RUN)
     if st.button(t['run_btn'], key="btn_meta"):
         
+        # 1. CEK HARD LIMIT (PROTEKSI SERVER)
+        if access_type == "Free" and st.session_state.usage_count >= 3:
+            st.error(t['limit_reached'], icon="⛔")
+            st.stop()
+            
+        # 2. CEK FILE LIMIT (PROTEKSI RAM)
+        if access_type == "Free" and uploaded_files and len(uploaded_files) > 1:
+            st.error(t['file_limit'], icon="⚠️")
+            st.stop()
+
         # Validasi Izin
         is_allowed = True
         if access_type == "Prompt Only": is_allowed = False
@@ -507,6 +543,11 @@ with tab1:
         elif not is_allowed:
             st.error(t['err_plan'].format(type=access_type, plat=platform))
         elif uploaded_files:
+            
+            # 3. ARTIFICIAL DELAY (PROTEKSI TRAFFIC)
+            if access_type == "Free":
+                with st.spinner(t['server_busy']):
+                    time.sleep(5) # Delay 5 detik
             
             progress = st.progress(0)
             total = len(uploaded_files)
@@ -531,12 +572,15 @@ with tab1:
                         
                         res = run_ai(final_key, vendor, selected_model, prompt)
                         st.text_area("Result:", value=res, height=250)
-                
-                if access_mode == "Free (Standard)":
-                    time.sleep(2)
             
             progress.progress(1.0)
             st.success(t['success_txt'])
+            
+            # 4. INCREMENT USAGE (KHUSUS FREE)
+            if access_type == "Free":
+                st.session_state.usage_count += 1
+                time.sleep(1)
+                st.rerun()
 
 # ==========================================
 # TAB 2: PROMPT ARCHITECT (GENERATOR)
@@ -553,7 +597,7 @@ with tab2:
     with col_mode1:
         p_mode = st.selectbox(t['pg_mode'], ("🖼️ Text to Image", "🔄 Image to Image", "🎬 Text to Video", "📸➡️🎬 Image to Video"))
     with col_mode2:
-        # UPDATE: NANO BANANA & GOOGLE VEO ADDED
+        # UPDATE V11: NANO BANANA & VEO
         p_target = st.selectbox(t['pg_target'], (
             "Midjourney v6", "Dall-E 3", 
             "Leonardo AI", "Nano Banana (Gemini Image)", 
@@ -572,11 +616,22 @@ with tab2:
     # TOMBOL GENERATE PROMPT
     if st.button(t['pg_btn'], key="btn_prompt"):
         
+        # 1. CEK HARD LIMIT (PROTEKSI SERVER)
+        if access_type == "Free" and st.session_state.usage_count >= 3:
+            st.error(t['limit_reached'], icon="⛔")
+            st.stop()
+        
         if not final_key:
             st.error(t['err_api_req'])
         elif not p_idea:
             st.warning(t['err_idea_req'])
         else:
+            
+            # 2. ARTIFICIAL DELAY (PROTEKSI TRAFFIC)
+            if access_type == "Free":
+                with st.spinner(t['server_busy']):
+                    time.sleep(3) # Delay 3 detik
+            
             with st.spinner("Meracik Mantra Ajaib..."):
                 
                 # --- UPDATE LOGIC V11: NANO BANANA & VEO LOGIC ADDED ---
@@ -608,3 +663,9 @@ with tab2:
                 
                 if not is_prompt_premium:
                     st.markdown(f"<small style='color:#F59E0B;'>{t['pg_upsell']}</small>", unsafe_allow_html=True)
+            
+            # 3. INCREMENT USAGE (KHUSUS FREE)
+            if access_type == "Free":
+                st.session_state.usage_count += 1
+                time.sleep(1)
+                st.rerun()
